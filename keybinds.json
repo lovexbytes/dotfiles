@@ -1,0 +1,19 @@
+// Place your key bindings in this file to override the defaults
+[
+    {
+        "key": "ctrl+`",
+        "command": "runCommands",
+        "args": {
+            "commands": [
+              "workbench.action.toggleEditorVisibility",
+              "workbench.action.terminal.focus"
+            ]
+        },
+        "when": "!terminalFocus"
+    },
+    {
+        "key": "ctrl+`",
+        "command": "workbench.action.closePanel",
+        "when": "terminalFocus"
+    },
+]
