@@ -1,0 +1,29 @@
+{
+  "tabnine.experimentalAutoImports": true,
+  "window.zoomLevel": 2,
+  "redhat.telemetry.enabled": false,
+  "remote.SSH.remotePlatform": {
+    "aws-ec2-alex": "linux"
+  },
+  "workbench.startupEditor": "none",
+  "terminal.integrated.enableMultiLinePasteWarning": false,
+  "npm.keybindingsChangedWarningShown": true,
+  "window.commandCenter": true,
+  "go.toolsManagement.autoUpdate": true,
+  "security.workspace.trust.untrustedFiles": "open",
+  "editor.fontFamily": "'Hack Nerd Font'",
+  "extensions.ignoreRecommendations": true,
+  "vim.visualModeKeyBindings": [],
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "workbench.activityBar.visible": false,
+  "workbench.colorTheme": "Serendipity Sunset",
+  "workbench.iconTheme": "serendipity-icons",
+  "editor.minimap.enabled": false,
+  "[go]": {
+    "editor.defaultFormatter": "golang.go"
+  },
+  "tailwindCSS.colorDecorators": false,
+  "editor.cursorSmoothCaretAnimation": "on",
+  "editor.lineNumbers": "relative"
+}
