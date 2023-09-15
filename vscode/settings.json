@@ -1,13 +1,22 @@
 {
+  "editor.tabSize": 4,
+  // insert spaces when pressing Tab
+  "editor.insertSpaces": true,
   "tabnine.experimentalAutoImports": true,
   "window.zoomLevel": 2,
   "redhat.telemetry.enabled": false,
+  "search.exclude": {
+    "**/.git": true,
+    "**/node_modules": true,
+    "**/.next": true,
+    "**/build": true,
+    "**/tmp": true
+  },
   "remote.SSH.remotePlatform": {
     "aws-ec2-alex": "linux"
   },
   "workbench.startupEditor": "none",
   "terminal.integrated.enableMultiLinePasteWarning": false,
-  "npm.keybindingsChangedWarningShown": true,
   "window.commandCenter": true,
   "go.toolsManagement.autoUpdate": true,
   "security.workspace.trust.untrustedFiles": "open",
