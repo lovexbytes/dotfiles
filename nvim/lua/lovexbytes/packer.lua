@@ -15,12 +15,12 @@ vim.opt.rtp:prepend(lazypath)
 
 return require("lazy").setup({
     -- telescope
-    { 'nvim-lua/plenary.nvim' }, 
-    { 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate'}, 
+    { 'nvim-lua/plenary.nvim' },
+    { 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate'},
     { 'nvim-telescope/telescope.nvim', tag = '0.1.5' },
     -- colorscheme
     { 'catppuccin/nvim', name = 'catppuccin', priority = 1000 },
-    -- lsp 
+    -- lsp
     {'williamboman/mason.nvim'},
     {'williamboman/mason-lspconfig.nvim'},
     {'VonHeikemen/lsp-zero.nvim', branch = 'v3.x'},
@@ -40,7 +40,11 @@ return require("lazy").setup({
             "MunifTanjim/nui.nvim",
             -- "3rd/image.nvim", -- Optional image support in preview window: See `# Preview Mode` for more information
         }
+    },
+    {
+      'stevearc/conform.nvim',
+      opts = {},
     }
-    
+
 
 }, opts)
