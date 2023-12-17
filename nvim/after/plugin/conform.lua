@@ -4,6 +4,8 @@ require("conform").setup({
 		python = { "isort", "black" },
 		javascript = { { "prettierd", "prettier" } },
 		go = { "goimports", "gofmt" },
+		sql = { "sql_formatter" },
+		ddl = { "sql_formatter" },
 		-- Use the "*" filetype to run formatters on all filetypes.
 		["*"] = { "codespell" },
 		-- Use the "_" filetype to run formatters on filetypes that don't
