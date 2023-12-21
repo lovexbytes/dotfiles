@@ -21,13 +21,30 @@ return require("lazy").setup({
 	-- colorscheme
 	{ "catppuccin/nvim", name = "catppuccin", priority = 1000 },
 	-- lsp
+	{ "VonHeikemen/lsp-zero.nvim", branch = "v3.x" },
 	{ "williamboman/mason.nvim" },
 	{ "williamboman/mason-lspconfig.nvim" },
-	{ "VonHeikemen/lsp-zero.nvim", branch = "v3.x" },
 	{ "neovim/nvim-lspconfig" },
+	-- autocompletion
 	{ "hrsh7th/cmp-nvim-lsp" },
 	{ "hrsh7th/nvim-cmp" },
-	{ "L3MON4D3/LuaSnip" },
+	{ "hrsh7th/cmp-buffer" }, -- source for text in buffer
+	{ "hrsh7th/cmp-path" }, -- source for file system paths
+	{
+		"ray-x/lsp_signature.nvim",
+		event = "VeryLazy",
+		opts = {},
+		config = function(_, opts)
+			require("lsp_signature").setup(opts)
+		end,
+	}, -- method signatures
+	{
+		"windwp/nvim-autopairs",
+		event = "InsertEnter",
+		opts = {}, -- this is equalent to setup({}) function
+	},
+	-- snippets
+	{ "L3MON4D3/LuaSnip", dependencies = { "rafamadriz/friendly-snippets" } },
 	-- floating terminal
 	{ "akinsho/toggleterm.nvim", version = "2.9.0", config = true },
 	-- neotree
