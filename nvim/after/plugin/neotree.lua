@@ -1,6 +1,5 @@
 -- set termguicolors to enable highlight groups
 vim.opt.termguicolors = true
-
 vim.keymap.set("n", "<C-b>", "<Cmd>Neotree toggle position=right<CR>")
 
 require("neo-tree").setup({
