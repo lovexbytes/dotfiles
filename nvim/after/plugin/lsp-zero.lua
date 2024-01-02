@@ -8,7 +8,7 @@ vim.diagnostic.config({ update_in_insert = true })
 
 require("mason").setup({})
 require("mason-lspconfig").setup({
-	ensure_installed = { "tsserver", "rust_analyzer", "eslint" },
+	ensure_installed = { "tsserver", "rust_analyzer", "quick_lint_js", "pyright" },
 	handlers = {
 		lsp_zero.default_setup,
 		lua_ls = function()
