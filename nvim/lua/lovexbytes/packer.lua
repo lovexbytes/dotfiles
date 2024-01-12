@@ -58,8 +58,21 @@ return require("lazy").setup({
 			-- "3rd/image.nvim", -- Optional image support in preview window: See `# Preview Mode` for more information
 		},
 	},
+	-- formatter
 	{
 		"stevearc/conform.nvim",
 		opts = {},
+	},
+	-- comment
+	{
+		"numToStr/Comment.nvim",
+		opts = {
+			-- add any options here
+		},
+		lazy = false,
+		dependencies = {
+
+			"JoosepAlviste/nvim-ts-context-commentstring",
+		},
 	},
 }, opts)
