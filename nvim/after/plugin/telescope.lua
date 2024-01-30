@@ -1,3 +1,10 @@
+require("telescope").setup({
+	defaults = {
+		layout_strategy = "flex",
+		layout_config = { height = 0.95, width = 0.95 },
+	},
+})
+
 local builtin = require("telescope.builtin")
 
 vim.keymap.set("n", "<leader>ff", function()
