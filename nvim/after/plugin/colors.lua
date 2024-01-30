@@ -5,6 +5,7 @@ function SetUpTheme()
 		transparent_background = true,
 		term_colors = true, -- sets terminal colors (e.g. `g:terminal_color_0`)
 		integrations = {
+			cmp = true,
 			treesitter = true,
 			telescope = {
 				enabled = true,

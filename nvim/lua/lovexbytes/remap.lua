@@ -11,6 +11,10 @@ vim.api.nvim_create_user_command("ToggleSearchHighlight", function()
 end, {})
 vim.api.nvim_set_keymap("n", "<leader>h", ":ToggleSearchHighlight<CR>", { noremap = true, silent = true })
 
+-- move visual selection
+vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
+vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
+
 -- align cursor when half moving page
 vim.keymap.set("n", "<C-d>", "<C-d>zz")
 vim.keymap.set("n", "<C-u>", "<C-u>zz")
@@ -27,6 +31,9 @@ vim.keymap.set("n", "<C-j>", "<cmd>cprev<CR>zz")
 vim.keymap.set("n", "<leader>k", "<cmd>lnext<CR>zz")
 vim.keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz")
 
---splitters
+-- splitters
 vim.keymap.set("n", "<C-l>", "<C-w>l<CR>")
 vim.keymap.set("n", "<C-h>", "<C-w>h<CR>")
+
+-- replace all occurences of a word on cursor
+vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
