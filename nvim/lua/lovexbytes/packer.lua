@@ -90,4 +90,11 @@ return require("lazy").setup({
 			"nvim-lua/plenary.nvim",
 		},
 	},
+	-- tailwind
+	{
+		"laytan/tailwind-sorter.nvim",
+		dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-lua/plenary.nvim" },
+		build = "cd formatter && npm i && npm run build",
+		config = true,
+	},
 }, opts)
