@@ -19,7 +19,9 @@ return require("lazy").setup({
 	{ "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
 	{ "nvim-telescope/telescope.nvim", tag = "0.1.5" },
 	-- colorscheme
-	{ "catppuccin/nvim", name = "catppuccin", priority = 1000 },
+	-- { "catppuccin/nvim", name = "catppuccin", priority = 1000 },
+	{ "datsfilipe/vesper.nvim" },
+
 	-- lsp
 	{ "VonHeikemen/lsp-zero.nvim", branch = "v3.x" },
 	{ "williamboman/mason.nvim" },
