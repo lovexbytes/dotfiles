@@ -66,6 +66,7 @@ require("mason-lspconfig").setup({
 		"quick_lint_js",
 		"pyright",
 		"lua_ls",
+		"yamlls",
 	},
 	handlers = {
 		lsp.default_setup,
