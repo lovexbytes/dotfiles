@@ -99,4 +99,9 @@ return require("lazy").setup({
 		build = "cd formatter && npm i && npm run build",
 		config = true,
 	},
+	--earchly
+	{
+		"earthly/earthly.vim",
+		branch = "main",
+	},
 }, opts)
