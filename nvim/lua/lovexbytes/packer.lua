@@ -99,9 +99,23 @@ return require("lazy").setup({
 		build = "cd formatter && npm i && npm run build",
 		config = true,
 	},
-	--earchly
+	--earthly
 	{
 		"earthly/earthly.vim",
 		branch = "main",
+	},
+	--protobuf
+	{
+		"dense-analysis/ale",
+		config = function()
+			-- vim.g.ale_lint_on_text_changed = "never"
+			vim.g.ale_linters_explicit = 1
+			vim.g.ale_linters = {
+				proto = { "buf-lint" },
+			}
+		end,
+	},
+	{
+		"bufbuild/vim-buf",
 	},
 }, opts)

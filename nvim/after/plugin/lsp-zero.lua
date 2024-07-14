@@ -56,12 +56,14 @@ require("mason").setup({
 		border = "rounded",
 	},
 })
+
 require("mason-lspconfig").setup({
 	ensure_installed = {
 		"tsserver",
 		"tailwindcss",
 		"eslint",
 		"gopls",
+		-- "goimports",
 		"rust_analyzer",
 		"quick_lint_js",
 		"pyright",
