@@ -59,7 +59,7 @@ require("mason").setup({
 
 require("mason-lspconfig").setup({
 	ensure_installed = {
-		"tsserver@4.2.0",
+		"tsserver@4.1.3",
 		"tailwindcss",
 		"eslint",
 		"gopls",
