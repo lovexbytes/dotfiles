@@ -37,3 +37,7 @@ vim.keymap.set("n", "<C-h>", "<C-w>h<CR>")
 
 -- replace all occurences of a word on cursor
 vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]])
+
+-- comments
+vim.keymap.set("n", "<C-_>", ":norm gcc<CR>")
+vim.keymap.set("v", "<C-_>", ":norm gcc<CR>")

@@ -65,18 +65,6 @@ return require("lazy").setup({
 		"stevearc/conform.nvim",
 		opts = {},
 	},
-	-- comment
-	{
-		"numToStr/Comment.nvim",
-		opts = {
-			-- add any options here
-		},
-		lazy = false,
-		dependencies = {
-
-			"JoosepAlviste/nvim-ts-context-commentstring",
-		},
-	},
 	-- git
 	{
 		"kdheepak/lazygit.nvim",
