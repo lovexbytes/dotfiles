@@ -142,13 +142,11 @@ return require("lazy").setup({
 			},
 			"L3MON4D3/LuaSnip",
 		},
-		build = function()
-			require("pkl-neovim.internal").init()
-
-			vim.cmd("TSInstall! pkl")
-		end,
 		config = function()
+			require("pkl-neovim.internal").init()
 			require("luasnip.loaders.from_snipmate").lazy_load()
+
+			vim.treesitter.language.register("pkl", "pkl")
 		end,
 	},
 }, opts)
