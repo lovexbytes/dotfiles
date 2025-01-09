@@ -153,4 +153,16 @@ return require("lazy").setup({
 			vim.treesitter.language.register("pkl", "pkl")
 		end,
 	},
+	--comment
+	{
+		"numToStr/Comment.nvim",
+		opts = {
+			-- add any options here
+		},
+		lazy = false,
+		dependencies = {
+
+			"JoosepAlviste/nvim-ts-context-commentstring",
+		},
+	},
 }, opts)
