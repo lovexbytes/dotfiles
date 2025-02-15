@@ -39,6 +39,7 @@ require("mason-lspconfig").setup({
 		"pyright",
 		"lua_ls",
 		"yamlls",
+		"svelte",
 	},
 	handlers = {
 		lsp.default_setup,

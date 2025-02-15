@@ -2,6 +2,9 @@ require("telescope").setup({
 	defaults = {
 		layout_strategy = "flex",
 		layout_config = { height = 0.95, width = 0.95 },
+		file_ignore_patterns = {
+			"node_modules",
+		},
 	},
 })
 
