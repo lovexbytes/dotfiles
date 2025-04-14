@@ -2,7 +2,9 @@ require("conform").setup({
 	formatters_by_ft = {
 		lua = { "stylua" },
 		python = { "isort", "black" },
-		javascript = { { "prettierd", "prettier" } },
+		javascript = { "biome", "prettier" },
+		typescript = { "biome", "prettier" },
+		typescriptreact = { "biome", "prettier" },
 		go = { "goimports", "gofmt" },
 		sql = { "sql_formatter" },
 		ddl = { "sql_formatter" },
