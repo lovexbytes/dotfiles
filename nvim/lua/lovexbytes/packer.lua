@@ -89,7 +89,23 @@ return require("lazy").setup({
 		"laytan/tailwind-sorter.nvim",
 		dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-lua/plenary.nvim" },
 		build = "cd formatter && npm i && npm run build",
-		config = true,
+		config = function()
+			require("tailwind-sorter").setup({
+				on_save_enabled = false,
+				on_save_pattern = {
+					"*.html",
+					"*.js",
+					"*.jsx",
+					"*.tsx",
+					"*.twig",
+					"*.hbs",
+					"*.php",
+					"*.heex",
+					"*.astro",
+				},
+				node_path = "node",
+			})
+		end,
 	},
 	--earthly
 	{
@@ -117,7 +133,19 @@ return require("lazy").setup({
 		version = "v0.0.23",
 		build = "make",
 		opts = {
-			-- Add any options here
+			providers = {
+				openai = {
+					-- IMPORTANT: Store your API key securely, preferably as an environment variable
+					api_key = os.getenv("OPENAI_API_KEY"), -- Reads OPENAI_API_KEY from your environment
+					-- You can optionally set a specific base URL if using a proxy or alternative endpoint
+					-- base_url = "https://api.openai.com/v1",
+					-- Default parameters for OpenAI models
+					-- request_params = {
+					--   temperature = 0.8,
+					--   max_tokens = 2048,
+					-- }
+				},
+			},
 		},
 		dependencies = {
 			"nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
