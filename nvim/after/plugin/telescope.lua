@@ -1,47 +1,23 @@
+-- ~/.config/nvim/after/plugin/telescope.lua
+local telescope_fd = require("lovexbytes.telescope_fd")
+local builtin = require("telescope.builtin")
+
 require("telescope").setup({
 	defaults = {
 		layout_strategy = "flex",
 		layout_config = { height = 0.95, width = 0.95 },
-		file_ignore_patterns = {
-			"node_modules",
-		},
+		file_ignore_patterns = { "node_modules" }, -- still applies if you want
 	},
 })
 
-local builtin = require("telescope.builtin")
-
-local always_exclude = {
-	"node_modules",
-	"dist",
-	".env",
-	".git",
-	".next",
-	".DS_Store",
-	".husky",
-	"target",
-}
-
-local function make_fd_command()
-	local cmd = {
-		"fd",
-		"--type",
-		"f",
-		"--hidden", -- still search hidden files
-		"--no-ignore", -- stop respecting .gitignore/.ignore/etc
-	}
-	for _, pattern in ipairs(always_exclude) do
-		table.insert(cmd, "--exclude")
-		table.insert(cmd, pattern)
-	end
-	return cmd
-end
-
+-- wired to your <leader>ff
 vim.keymap.set("n", "<leader>ff", function()
-	require("telescope.builtin").find_files({
-		find_command = make_fd_command(),
+	builtin.find_files({
+		find_command = telescope_fd.make_fd_command(),
 	})
 end)
 
+-- other mappings…
 vim.keymap.set("n", "<leader>gf", builtin.git_files, {})
 vim.keymap.set("n", "<leader>fg", builtin.live_grep, {})
 vim.keymap.set("n", "<leader>fb", builtin.buffers, {})

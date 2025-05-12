@@ -1,4 +1,5 @@
 -- install lazy.nvim if not present
+--
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
 	vim.fn.system({
@@ -13,6 +14,7 @@ end
 
 vim.opt.rtp:prepend(lazypath)
 
+local telescope_fd = require("lovexbytes.telescope_fd")
 return require("lazy").setup({
 	-- telescope
 	{ "nvim-lua/plenary.nvim" },
@@ -144,6 +146,12 @@ return require("lazy").setup({
 					--   temperature = 0.8,
 					--   max_tokens = 2048,
 					-- }
+				},
+			},
+			file_selector = {
+				provider = "telescope",
+				provider_opts = {
+					get_filepaths = telescope_fd.get_filepaths,
 				},
 			},
 		},
