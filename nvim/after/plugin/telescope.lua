@@ -10,9 +10,35 @@ require("telescope").setup({
 
 local builtin = require("telescope.builtin")
 
+local always_exclude = {
+	"node_modules",
+	"dist",
+	".env",
+	".git",
+	".next",
+	".DS_Store",
+	".husky",
+	"target",
+}
+
+local function make_fd_command()
+	local cmd = {
+		"fd",
+		"--type",
+		"f",
+		"--hidden", -- still search hidden files
+		"--no-ignore", -- stop respecting .gitignore/.ignore/etc
+	}
+	for _, pattern in ipairs(always_exclude) do
+		table.insert(cmd, "--exclude")
+		table.insert(cmd, pattern)
+	end
+	return cmd
+end
+
 vim.keymap.set("n", "<leader>ff", function()
 	require("telescope.builtin").find_files({
-		find_command = { "fd", "--type", "f", "--hidden", "--exclude", ".git" },
+		find_command = make_fd_command(),
 	})
 end)
 
