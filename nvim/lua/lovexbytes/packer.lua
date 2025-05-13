@@ -135,12 +135,14 @@ return require("lazy").setup({
 		version = "v0.0.23",
 		build = "make",
 		opts = {
+			provider = "openai",
+			cursor_applying_provider = "openai",
+			behaviour = {
+				enable_cursor_planning_mode = true,
+			},
 			providers = {
 				openai = {
-					-- IMPORTANT: Store your API key securely, preferably as an environment variable
 					api_key = os.getenv("OPENAI_API_KEY"), -- Reads OPENAI_API_KEY from your environment
-					-- You can optionally set a specific base URL if using a proxy or alternative endpoint
-					-- base_url = "https://api.openai.com/v1",
 					-- Default parameters for OpenAI models
 					-- request_params = {
 					--   temperature = 0.8,
@@ -148,6 +150,15 @@ return require("lazy").setup({
 					-- }
 				},
 			},
+			vendors = {
+				openai = {
+					__inherited_from = "openai",
+					max_completion_tokens = 30000,
+
+					-- disable OpenAI function calling so the model only ever returns text
+				},
+			},
+
 			file_selector = {
 				provider = "telescope",
 				provider_opts = {
