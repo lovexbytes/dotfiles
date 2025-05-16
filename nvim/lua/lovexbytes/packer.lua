@@ -132,8 +132,7 @@ return require("lazy").setup({
 	{
 		"yetone/avante.nvim",
 		event = "VeryLazy",
-		version = "v0.0.23",
-		build = "make",
+		version = false,
 		opts = {
 			provider = "openai",
 			cursor_applying_provider = "openai",
@@ -154,8 +153,6 @@ return require("lazy").setup({
 				openai = {
 					__inherited_from = "openai",
 					max_completion_tokens = 30000,
-
-					-- disable OpenAI function calling so the model only ever returns text
 				},
 			},
 
@@ -167,6 +164,7 @@ return require("lazy").setup({
 			},
 		},
 		dependencies = {
+			"nvim-lua/plenary.nvim",
 			"nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
 			"stevearc/dressing.nvim",
 			"nvim-lua/plenary.nvim",
