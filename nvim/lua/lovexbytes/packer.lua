@@ -134,8 +134,8 @@ return require("lazy").setup({
 		event = "VeryLazy",
 		version = false,
 		opts = {
-			provider = "openai",
-			cursor_applying_provider = "openai",
+			provider = "claude",
+			cursor_applying_provider = "claude",
 			behaviour = {
 				enable_cursor_planning_mode = true,
 			},
@@ -148,7 +148,16 @@ return require("lazy").setup({
 					--   max_tokens = 2048,
 					-- }
 				},
+				claude = {
+					api_key = os.getenv("ANTHROPIC_API_KEY"), -- Reads OPENAI_API_KEY from your environment
+					-- Default parameters for OpenAI models
+					-- request_params = {
+					--   temperature = 0.8,
+					--   max_tokens = 2048,
+					-- }
+				},
 			},
+
 			vendors = {
 				openai = {
 					__inherited_from = "openai",
@@ -164,7 +173,6 @@ return require("lazy").setup({
 			},
 		},
 		dependencies = {
-			"nvim-lua/plenary.nvim",
 			"nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
 			"stevearc/dressing.nvim",
 			"nvim-lua/plenary.nvim",
@@ -191,11 +199,23 @@ return require("lazy").setup({
 			},
 			"L3MON4D3/LuaSnip",
 		},
+		build = function()
+			require("pkl-neovim").init()
+
+			-- Set up syntax highlighting.
+			vim.cmd("TSInstall pkl")
+		end,
 		config = function()
-			require("pkl-neovim.internal").init()
+			-- Set up snippets.
 			require("luasnip.loaders.from_snipmate").lazy_load()
 
-			vim.treesitter.language.register("pkl", "pkl")
+			-- Configure pkl-lsp
+			vim.g.pkl_neovim = {
+				-- start_command = { "java", "-jar", "/path/to/pkl-lsp.jar" },
+				-- or if pkl-lsp is installed with brew:
+				start_command = { "pkl-lsp" },
+				pkl_cli_path = "/opt/homebrew/bin/pkl",
+			}
 		end,
 	},
 	--comment
