@@ -6,7 +6,20 @@ require("telescope").setup({
 	defaults = {
 		layout_strategy = "flex",
 		layout_config = { height = 0.95, width = 0.95 },
-		file_ignore_patterns = { "node_modules" }, -- still applies if you want
+		file_ignore_patterns = { "node_modules" }, -- still applies if you want,
+	},
+	pickers = {
+		find_files = {
+			previewer = false, -- ✦ disables preview
+			layout_config = {
+				-- this makes full use of the window:
+				width = 0.95,
+				height = 0.95,
+				preview_cutoff = 1, -- minimal threshold: always disable preview
+			},
+		},
+		-- you can add more pickers here, e.g.:
+		-- git_files = { previewer = false },
 	},
 })
 
