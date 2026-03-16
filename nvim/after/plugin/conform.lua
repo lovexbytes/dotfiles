@@ -10,6 +10,7 @@ require("conform").setup({
 		python = { "isort", "black" },
 		javascript = { "biome" },
 		typescript = { "biome" },
+		astro = { "biome" },
 		typescriptreact = { "biome" },
 		go = { "goimports", "gofmt" },
 		sql = { "sql_formatter" },

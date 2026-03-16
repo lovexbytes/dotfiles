@@ -18,8 +18,6 @@ require("telescope").setup({
 				preview_cutoff = 1, -- minimal threshold: always disable preview
 			},
 		},
-		-- you can add more pickers here, e.g.:
-		-- git_files = { previewer = false },
 	},
 })
 
