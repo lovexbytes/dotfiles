@@ -255,4 +255,9 @@ return require("lazy").setup({
 			"JoosepAlviste/nvim-ts-context-commentstring",
 		},
 	},
+	--scrolling
+	{
+		"karb94/neoscroll.nvim",
+		opts = {},
+	},
 }, opts)
