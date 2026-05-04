@@ -1,0 +1,72 @@
+name: assistant
+description: Mint + orange dark skin with Assistant branding
+
+colors:
+  banner_border: "#99FFE4"
+  banner_title: "#FFC799"
+  banner_accent: "#99FFE4"
+  banner_dim: "#A0A0A0"
+  banner_text: "#FFFFFF"
+  ui_accent: "#99FFE4"
+  ui_label: "#FFC799"
+  ui_ok: "#99FFE4"
+  ui_error: "#ef5350"
+  ui_warn: "#FFC799"
+  prompt: "#FFFFFF"
+  input_rule: "#232323"
+  response_border: "#FFC799"
+  status_bar_bg: "#101010"
+  status_bar_text: "#A0A0A0"
+  status_bar_strong: "#FFC799"
+  status_bar_dim: "#232323"
+  status_bar_good: "#99FFE4"
+  status_bar_warn: "#FFC799"
+  status_bar_bad: "#ff8c69"
+  status_bar_critical: "#ef5350"
+  session_label: "#FFC799"
+  session_border: "#99FFE4"
+  voice_status_bg: "#101010"
+  completion_menu_bg: "#1C1C1C"
+  completion_menu_current_bg: "#232323"
+  completion_menu_meta_bg: "#101010"
+  completion_menu_meta_current_bg: "#232323"
+
+spinner:
+  waiting_faces:
+    - "(◕)"
+    - "(•)"
+    - "(◔)"
+    - "(•‿•)"
+  thinking_faces:
+    - "(◕)"
+    - "(⌁)"
+    - "(•‿•)"
+    - "(◔)"
+  thinking_verbs:
+    - "thinking"
+    - "checking"
+    - "shaping"
+    - "refining"
+  wings:
+    - ["◖", "◗"]
+    - ["▌", "▐"]
+    - ["◦", "◦"]
+
+branding:
+  agent_name: "Assistant"
+  welcome: "Welcome to Assistant! Type your message or /help for commands."
+  goodbye: "Goodbye."
+  response_label: " Assistant "
+  prompt_symbol: "❯"
+  help_header: "Assistant Commands"
+
+tool_prefix: "┊"
+
+tool_emojis:
+  terminal: "⚡"
+  read_file: "◫"
+  write_file: "✎"
+  patch: "🩹"
+  search_files: "⌕"
+  browser_navigate: "◌"
+  web_search: "⌕"
