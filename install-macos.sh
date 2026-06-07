@@ -5,8 +5,8 @@ set -u
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LOG_FILE="${REPO_ROOT}/install-macos.log"
 
-OPTIONS=("ghostty" "kitty" "nvim" "oh-my-posh" "opencode" "tmux")
-SELECTED=(0 0 0 0 0 0)
+OPTIONS=("ghostty" "hermes" "kitty" "nvim" "oh-my-posh" "opencode" "tmux")
+SELECTED=(0 0 0 0 0 0 0)
 
 log() {
   local level="$1"
@@ -129,6 +129,10 @@ is_installed_kitty() {
   command -v kitty >/dev/null 2>&1 || [ -d /Applications/kitty.app ] || [ -d "$HOME/Applications/kitty.app" ]
 }
 
+is_installed_hermes() {
+  command -v hermes >/dev/null 2>&1
+}
+
 is_installed_nvim() {
   command -v nvim >/dev/null 2>&1
 }
@@ -164,6 +168,10 @@ install_vendor_ghostty() {
 
 install_vendor_kitty() {
   curl -fsSL https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin
+}
+
+install_vendor_hermes() {
+  curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
 }
 
 install_vendor_nvim() {
@@ -279,11 +287,29 @@ replace_file_config() {
   log INFO "Config replaced: $dst"
 }
 
+apply_hermes_config() {
+  local src="$REPO_ROOT/hermes/assistant"
+  local profile_dst="$HOME/.hermes/profiles/assistant"
+
+  mkdir -p "$HOME/.hermes" "$profile_dst"
+  cp "$src/SOUL.md" "$HOME/.hermes/SOUL.md"
+  log INFO "Hermes SOUL.md installed: $HOME/.hermes/SOUL.md"
+
+  if [ -d "$src" ]; then
+    mkdir -p "$profile_dst"
+    cp -R "$src/". "$profile_dst/"
+    log INFO "Hermes assistant profile synced: $profile_dst"
+  fi
+}
+
 apply_config() {
   local item="$1"
   case "$item" in
     ghostty)
       replace_file_config "$REPO_ROOT/ghostty/config" "$HOME/.config/ghostty/config"
+      ;;
+    hermes)
+      apply_hermes_config
       ;;
     kitty)
       replace_dir_config "$REPO_ROOT/kitty" "$HOME/.config/kitty"
@@ -310,6 +336,14 @@ install_item() {
   case "$item" in
     ghostty)
       install_or_skip "ghostty" is_installed_ghostty cask ghostty install_vendor_ghostty
+      ;;
+    hermes)
+      if is_installed_hermes; then
+        log INFO "hermes is already installed. Skipping installation."
+      else
+        log INFO "hermes not found. Installing from vendor script..."
+        install_vendor_hermes
+      fi
       ;;
     kitty)
       install_or_skip "kitty" is_installed_kitty cask kitty install_vendor_kitty
