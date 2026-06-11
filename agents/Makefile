@@ -3,94 +3,57 @@ SKILL_MANIFESTS := $(wildcard $(SKILLS_SRC_ROOT)/*/SKILL.md)
 SKILL_DIRS := $(patsubst %/SKILL.md,%,$(SKILL_MANIFESTS))
 SKILL_NAMES := $(sort $(notdir $(SKILL_DIRS)))
 
-ifeq ($(OS),Windows_NT)
-WIN_HOME := $(subst \,/,$(USERPROFILE))
-CODEX_SKILLS_ROOT := $(WIN_HOME)/.codex/skills
-AGENTS_SKILLS_ROOT := $(WIN_HOME)/.agents/skills/my-skill
+INSTRUCTIONS_SRC := $(CURDIR)/instructions/assistant.md
+INSTALL_HOME ?= /Users/lovexbytes
+OPENCODE_SKILLS_ROOT := $(INSTALL_HOME)/.config/opencode/skills
+OPENCODE_AGENTS := $(INSTALL_HOME)/.config/opencode/AGENTS.md
+HERMES_SOUL := $(INSTALL_HOME)/.hermes/SOUL.md
 
-define win_install_skills_script
-$$ErrorActionPreference = 'Stop';
-$$root = '$(1)';
-$$sourceRoot = '$(SKILLS_SRC_ROOT)';
-New-Item -ItemType Directory -Force -Path $$root | Out-Null;
-$$skills = '$(SKILL_NAMES)' -split ' ';
-foreach ($$skill in $$skills) {
-	$$source = Join-Path $$sourceRoot $$skill;
-	$$target = Join-Path $$root $$skill;
-	$$sourceSkill = Join-Path $$source 'SKILL.md';
-	$$targetSkill = Join-Path $$target 'SKILL.md';
-	if (Test-Path -LiteralPath $$target) {
-		$$item = Get-Item -LiteralPath $$target;
-		if ($$item.LinkType -in @('Junction', 'SymbolicLink')) {
-			[IO.Directory]::Delete($$target);
-		} elseif ((Test-Path -LiteralPath $$targetSkill -PathType Leaf) -and (Test-Path -LiteralPath $$sourceSkill -PathType Leaf)) {
-			fc.exe /B $$sourceSkill $$targetSkill | Out-Null;
-			if ($$LASTEXITCODE -eq 0) {
-				Remove-Item -LiteralPath $$target -Recurse -Force;
-			} else {
-				[Console]::Error.WriteLine('refusing to replace non-symlink install target: ' + $$target);
-				[Console]::Error.WriteLine('move it aside manually if you want this repo to own that skill install');
-				exit 1;
-			}
-		} else {
-			[Console]::Error.WriteLine('refusing to replace non-symlink install target: ' + $$target);
-			[Console]::Error.WriteLine('move it aside manually if you want this repo to own that skill install');
-			exit 1;
-		}
-	}
-	New-Item -ItemType Junction -Path $$target -Target $$source | Out-Null;
-}
-endef
+.PHONY: list-skills install-opencode-skills install-opencode-instructions install-hermes-instructions install-opencode install-hermes install
 
-define install_skills
-@powershell -NoProfile -Command "$(strip $(call win_install_skills_script,$(1)))"
-@echo "linked $(words $(SKILL_NAMES)) skill modules to $(1)"
-endef
+list-skills:
+	@set -- $(SKILL_NAMES); \
+	for skill do \
+		echo "$$skill"; \
+	done
 
-define show_skills
-@powershell -NoProfile -Command "'$(SKILL_NAMES)' -split ' ' | ForEach-Object { Write-Output $$_ }"
-endef
-
-else
-CODEX_SKILLS_ROOT := $(HOME)/.codex/skills
-AGENTS_SKILLS_ROOT := $(HOME)/.agents/skills/my-skill
-
-define install_skills
-@mkdir -p "$(1)"
-@set -- $(SKILL_NAMES); \
-for skill do \
-	src="$(SKILLS_SRC_ROOT)/$$skill"; \
-	dst="$(1)/$$skill"; \
-	if [ -e "$$dst" ] && [ ! -L "$$dst" ]; then \
-		if [ -f "$$dst/SKILL.md" ] && [ -f "$$src/SKILL.md" ] && cmp -s "$$src/SKILL.md" "$$dst/SKILL.md"; then \
-			rm -rf "$$dst"; \
-		else \
+install-opencode-skills:
+	@mkdir -p "$(OPENCODE_SKILLS_ROOT)"
+	@set -- $(SKILL_NAMES); \
+	for skill do \
+		src="$(SKILLS_SRC_ROOT)/$$skill"; \
+		dst="$(OPENCODE_SKILLS_ROOT)/$$skill"; \
+		if [ -e "$$dst" ] && [ ! -L "$$dst" ]; then \
 			echo "refusing to replace non-symlink install target: $$dst" >&2; \
 			echo "move it aside manually if you want this repo to own that skill install" >&2; \
 			exit 1; \
 		fi; \
-	fi; \
-	ln -sfn "$$src" "$$dst"; \
-done
-@echo "linked $(words $(SKILL_NAMES)) skill modules to $(1)"
-endef
+		ln -sfn "$$src" "$$dst"; \
+	done
+	@echo "linked $(words $(SKILL_NAMES)) skill modules to $(OPENCODE_SKILLS_ROOT)"
 
-define show_skills
-@set -- $(SKILL_NAMES); \
-for skill do \
-	echo "$$skill"; \
-done
-endef
+install-opencode-instructions:
+	@mkdir -p "$$(dirname "$(OPENCODE_AGENTS)")"
+	@if [ -e "$(OPENCODE_AGENTS)" ] && [ ! -L "$(OPENCODE_AGENTS)" ]; then \
+		echo "refusing to replace non-symlink install target: $(OPENCODE_AGENTS)" >&2; \
+		echo "move it aside manually if you want this repo to own that instruction file" >&2; \
+		exit 1; \
+	fi
+	@ln -sfn "$(INSTRUCTIONS_SRC)" "$(OPENCODE_AGENTS)"
+	@echo "linked OpenCode instructions to $(OPENCODE_AGENTS)"
 
-endif
+install-hermes-instructions:
+	@mkdir -p "$$(dirname "$(HERMES_SOUL)")"
+	@if [ -e "$(HERMES_SOUL)" ] && [ ! -L "$(HERMES_SOUL)" ]; then \
+		echo "refusing to replace non-symlink install target: $(HERMES_SOUL)" >&2; \
+		echo "move it aside manually if you want this repo to own that instruction file" >&2; \
+		exit 1; \
+	fi
+	@ln -sfn "$(INSTRUCTIONS_SRC)" "$(HERMES_SOUL)"
+	@echo "linked Hermes default SOUL to $(HERMES_SOUL)"
 
-.PHONY: install-codex install-agents list-skills
+install-opencode: install-opencode-skills install-opencode-instructions
 
-list-skills:
-	$(call show_skills)
+install-hermes: install-hermes-instructions
 
-install-codex:
-	$(call install_skills,$(CODEX_SKILLS_ROOT))
-
-install-agents:
-	$(call install_skills,$(AGENTS_SKILLS_ROOT))
+install: install-opencode install-hermes
