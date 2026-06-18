@@ -5,8 +5,8 @@ set -u
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LOG_FILE="${REPO_ROOT}/install-macos.log"
 
-OPTIONS=("ghostty" "hermes" "kitty" "nvim" "oh-my-posh" "opencode" "tmux")
-SELECTED=(0 0 0 0 0 0 0)
+OPTIONS=("ghostty" "hermes" "hunk" "kitty" "nvim" "oh-my-posh" "opencode" "tmux")
+SELECTED=(0 0 0 0 0 0 0 0)
 
 log() {
   local level="$1"
@@ -133,6 +133,10 @@ is_installed_hermes() {
   command -v hermes >/dev/null 2>&1
 }
 
+is_installed_hunk() {
+  command -v hunk >/dev/null 2>&1
+}
+
 is_installed_nvim() {
   command -v nvim >/dev/null 2>&1
 }
@@ -172,6 +176,21 @@ install_vendor_kitty() {
 
 install_vendor_hermes() {
   curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
+}
+
+install_vendor_hunk() {
+  if command -v npm >/dev/null 2>&1; then
+    npm install -g hunkdiff
+    return $?
+  fi
+
+  if ensure_homebrew && brew_install formula node; then
+    npm install -g hunkdiff
+    return $?
+  fi
+
+  log WARN "No npm found for hunk installation."
+  return 1
 }
 
 install_vendor_nvim() {
@@ -343,6 +362,14 @@ install_item() {
       else
         log INFO "hermes not found. Installing from vendor script..."
         install_vendor_hermes
+      fi
+      ;;
+    hunk)
+      if is_installed_hunk; then
+        log INFO "hunk is already installed. Skipping installation."
+      else
+        log INFO "hunk not found. Installing hunkdiff from npm..."
+        install_vendor_hunk
       fi
       ;;
     kitty)

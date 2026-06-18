@@ -41,3 +41,69 @@ vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><
 -- comments
 vim.keymap.set("n", "<C-_>", ":norm gcc<CR>")
 vim.keymap.set("v", "<C-_>", ":norm gcc<CR>")
+
+-- hunk
+local Terminal = require("toggleterm.terminal").Terminal
+local hunk_terms = {}
+
+local function close_hunk(term, root)
+	vim.schedule(function()
+		term:shutdown()
+		hunk_terms[root] = nil
+	end)
+end
+
+local function current_git_root()
+	local argv0 = vim.fn.argv(0)
+	if type(argv0) == "string" and argv0 ~= "" and vim.fn.isdirectory(argv0) == 1 then
+		local root = vim.fs.root(vim.fn.fnamemodify(argv0, ":p"), ".git")
+		if root ~= nil then
+			return root
+		end
+	end
+
+	local cwd = vim.fn.getcwd()
+	local root = vim.fs.root(cwd, ".git")
+	if root ~= nil then
+		return root
+	end
+
+	local path = vim.api.nvim_buf_get_name(0)
+	if path == "" then
+		return nil
+	end
+
+	return vim.fs.root(vim.fs.dirname(path), ".git")
+end
+
+vim.keymap.set("n", "<leader>gd", function()
+	local root = current_git_root()
+	if root == nil then
+		vim.notify("Hunk must be opened from inside a Git repository", vim.log.levels.WARN)
+		return
+	end
+
+	if hunk_terms[root] == nil then
+		hunk_terms[root] = Terminal:new({
+			cmd = "hunk diff --watch",
+			dir = root,
+			direction = "float",
+			hidden = true,
+			close_on_exit = false,
+			float_opts = {
+				border = "curved",
+			},
+			on_open = function(term)
+				vim.keymap.set({ "n", "t" }, "q", function()
+					close_hunk(term, root)
+				end, { buffer = term.bufnr, noremap = true, silent = true })
+
+				vim.keymap.set({ "n", "t" }, "<Esc>", function()
+					close_hunk(term, root)
+				end, { buffer = term.bufnr, noremap = true, silent = true })
+			end,
+		})
+	end
+
+	hunk_terms[root]:toggle()
+end, { desc = "Open Hunk", noremap = true, silent = true })
