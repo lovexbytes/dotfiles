@@ -25,3 +25,9 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 		)
 	end,
 })
+
+vim.api.nvim_create_autocmd("VimLeave", {
+	callback = function()
+		vim.fn.system("stty opost onlcr icanon isig iexten echo icrnl ixon 2>/dev/null")
+	end,
+})

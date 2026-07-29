@@ -40,7 +40,7 @@ vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><
 
 -- comments
 vim.keymap.set("n", "<C-_>", ":norm gcc<CR>")
-vim.keymap.set("v", "<C-_>", ":norm gcc<CR>")
+vim.keymap.set("x", "<C-_>", "gb", { remap = true })
 
 -- hunk
 local Terminal = require("toggleterm.terminal").Terminal
