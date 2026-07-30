@@ -138,7 +138,11 @@ is_installed_hunk() {
 }
 
 is_installed_nvim() {
-  command -v nvim >/dev/null 2>&1
+  local nvim_path="$HOME/.local/opt/nvim-0.11.5/bin/nvim"
+
+  [ -x "$nvim_path" ] \
+    && [ "$("$nvim_path" --version | head -n 1)" = "NVIM v0.11.5" ] \
+    && [ "$(readlink "$HOME/.local/bin/nvim" 2>/dev/null)" = "$nvim_path" ]
 }
 
 is_installed_oh_my_posh() {
@@ -211,6 +215,7 @@ install_vendor_nvim() {
   local url
   local tmp_dir
   local extract_dir
+  local install_dir="$HOME/.local/opt/nvim-0.11.5"
 
   arch="$(uname -m)"
   if [ "$arch" = "arm64" ]; then
@@ -219,7 +224,8 @@ install_vendor_nvim() {
     tar_name="nvim-macos-x86_64.tar.gz"
   fi
 
-  url="https://github.com/neovim/neovim/releases/latest/download/${tar_name}"
+  # nvim-treesitter does not support Neovim 0.12.
+  url="https://github.com/neovim/neovim/releases/download/v0.11.5/${tar_name}"
   tmp_dir="$(mktemp -d)"
 
   if ! curl -fsSL "$url" -o "${tmp_dir}/nvim.tar.gz"; then
@@ -239,9 +245,9 @@ install_vendor_nvim() {
   fi
 
   mkdir -p "$HOME/.local/opt" "$HOME/.local/bin"
-  rm -rf "$HOME/.local/opt/nvim"
-  mv "$extract_dir" "$HOME/.local/opt/nvim"
-  ln -sf "$HOME/.local/opt/nvim/bin/nvim" "$HOME/.local/bin/nvim"
+  rm -rf "$install_dir"
+  mv "$extract_dir" "$install_dir"
+  ln -sf "$install_dir/bin/nvim" "$HOME/.local/bin/nvim"
   rm -rf "$tmp_dir"
   return 0
 }
@@ -471,7 +477,14 @@ install_item() {
       install_or_skip "kitty" is_installed_kitty cask kitty install_vendor_kitty
       ;;
     nvim)
-      install_or_skip "nvim" is_installed_nvim formula neovim install_vendor_nvim
+      if is_installed_nvim; then
+        log INFO "nvim 0.11.5 is already installed. Skipping installation."
+      elif install_vendor_nvim; then
+        log INFO "nvim 0.11.5 installed from the official release archive."
+      else
+        log ERROR "Failed to install nvim 0.11.5."
+        return 1
+      fi
       ;;
     oh-my-posh)
       install_or_skip "oh-my-posh" is_installed_oh_my_posh formula oh-my-posh install_vendor_oh_my_posh
