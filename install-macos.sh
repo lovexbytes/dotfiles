@@ -5,8 +5,8 @@ set -u
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LOG_FILE="${REPO_ROOT}/install-macos.log"
 
-OPTIONS=("ghostty" "hermes" "hunk" "kitty" "nvim" "oh-my-posh" "opencode" "tmux")
-SELECTED=(0 0 0 0 0 0 0 0)
+OPTIONS=("ghostty" "hermes" "hunk" "kitty" "nvim" "oh-my-posh" "opencode" "ponytail" "rtk" "tmux")
+SELECTED=(0 0 0 0 0 0 0 0 0 0)
 
 log() {
   local level="$1"
@@ -149,6 +149,14 @@ is_installed_opencode() {
   command -v opencode >/dev/null 2>&1
 }
 
+is_installed_ponytail() {
+  hermes plugins list 2>/dev/null | grep -Eq '^│ ponytail[[:space:]]+│ enabled|ponytail[[:space:]]+enabled'
+}
+
+is_installed_rtk() {
+  command -v rtk >/dev/null 2>&1
+}
+
 is_installed_tmux() {
   command -v tmux >/dev/null 2>&1
 }
@@ -254,6 +262,19 @@ install_vendor_opencode() {
   return 1
 }
 
+install_vendor_ponytail() {
+  if ! command -v hermes >/dev/null 2>&1; then
+    log WARN "Hermes is required before installing the Ponytail Hermes plugin."
+    return 1
+  fi
+
+  hermes plugins install DietrichGebert/ponytail --enable || hermes plugins enable ponytail
+}
+
+install_vendor_rtk() {
+  curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh
+}
+
 install_vendor_tmux() {
   log WARN "No automated vendor installer configured for tmux."
   log WARN "Install manually from https://github.com/tmux/tmux/wiki/Installing"
@@ -308,17 +329,56 @@ replace_file_config() {
 
 apply_hermes_config() {
   local src="$REPO_ROOT/hermes/assistant"
+  local shared_instructions="$REPO_ROOT/agents/instructions/assistant.md"
   local profile_dst="$HOME/.hermes/profiles/assistant"
 
   mkdir -p "$HOME/.hermes" "$profile_dst"
-  cp "$src/SOUL.md" "$HOME/.hermes/SOUL.md"
-  log INFO "Hermes SOUL.md installed: $HOME/.hermes/SOUL.md"
+  ln -sfn "$shared_instructions" "$HOME/.hermes/SOUL.md"
+  log INFO "Hermes SOUL.md linked: $HOME/.hermes/SOUL.md -> $shared_instructions"
 
   if [ -d "$src" ]; then
     mkdir -p "$profile_dst"
     cp -R "$src/". "$profile_dst/"
+    ln -sfn "$shared_instructions" "$profile_dst/SOUL.md"
     log INFO "Hermes assistant profile synced: $profile_dst"
   fi
+}
+
+apply_opencode_config() {
+  mkdir -p "$HOME/.config/opencode"
+  rsync -a --delete \
+    --exclude 'node_modules/' \
+    --exclude '.git/' \
+    --exclude '.DS_Store' \
+    --exclude '*backup*' \
+    --exclude '*.bak' \
+    --exclude '*.bak-*' \
+    "$REPO_ROOT/opencode/" "$HOME/.config/opencode/"
+  ln -sfn "$REPO_ROOT/agents/instructions/assistant.md" "$HOME/.config/opencode/AGENTS.md"
+  log INFO "OpenCode config synced: $HOME/.config/opencode"
+}
+
+configure_rtk_integrations() {
+  if ! command -v rtk >/dev/null 2>&1; then
+    log WARN "rtk not found; skipping RTK integration setup."
+    return 1
+  fi
+
+  rtk init --agent hermes || return 1
+  rtk init -g --opencode || return 1
+  log INFO "RTK initialized for Hermes and OpenCode. Restart both tools."
+}
+
+configure_ponytail_integrations() {
+  if command -v hermes >/dev/null 2>&1; then
+    hermes plugins install DietrichGebert/ponytail --enable || hermes plugins enable ponytail || return 1
+    log INFO "Ponytail enabled for Hermes. Restart Hermes or the gateway."
+  else
+    log WARN "Hermes not found; skipping Ponytail Hermes plugin."
+  fi
+
+  apply_opencode_config
+  log INFO "Ponytail configured for OpenCode via opencode.json plugin entry."
 }
 
 apply_config() {
@@ -340,9 +400,13 @@ apply_config() {
       replace_file_config "$REPO_ROOT/ohmyposh/lovexbytes.omp.json" "$HOME/.config/ohmyposh/lovexbytes.omp.json"
       ;;
     opencode)
-      mkdir -p "$HOME/.config/opencode"
-      replace_file_config "$REPO_ROOT/opencode/opencode.json" "$HOME/.config/opencode/opencode.json"
-      replace_file_config "$REPO_ROOT/opencode/tui.json" "$HOME/.config/opencode/tui.json"
+      apply_opencode_config
+      ;;
+    ponytail)
+      configure_ponytail_integrations
+      ;;
+    rtk)
+      configure_rtk_integrations
       ;;
     tmux)
       replace_file_config "$REPO_ROOT/tmux/tmux.conf" "$HOME/.tmux.conf"
@@ -383,6 +447,17 @@ install_item() {
       ;;
     opencode)
       install_or_skip "opencode" is_installed_opencode formula opencode install_vendor_opencode
+      ;;
+    ponytail)
+      if is_installed_ponytail; then
+        log INFO "ponytail is already enabled for Hermes. Skipping installation."
+      else
+        log INFO "ponytail not found. Installing Hermes plugin..."
+        install_vendor_ponytail
+      fi
+      ;;
+    rtk)
+      install_or_skip "rtk" is_installed_rtk formula rtk install_vendor_rtk
       ;;
     tmux)
       install_or_skip "tmux" is_installed_tmux formula tmux install_vendor_tmux

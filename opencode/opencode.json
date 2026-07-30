@@ -24,8 +24,8 @@
   "provider": {
     "openrouter": {
       "models": {
-        "qwen/qwen3-coder:free":{},
-        "qwen/qwen3-coder":{}
+        "qwen/qwen3-coder:free": {},
+        "qwen/qwen3-coder": {}
       }
     },
     "openai": {
@@ -262,6 +262,8 @@
   },
   "plugin": [
     "opencode-openai-codex-auth",
-    "superpowers@git+https://github.com/obra/superpowers.git"
+    "superpowers@git+https://github.com/obra/superpowers.git",
+    "./plugins/rtk.ts",
+    "@dietrichgebert/ponytail"
   ]
 }
