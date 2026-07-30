@@ -6,19 +6,19 @@
   "agent": {
     "build": {
       "model": "openai/gpt-5.6-terra",
-      "reasoningEffort": "medium"
+      "reasoningEffort": "low"
     },
     "plan": {
-      "model": "openai/gpt-5.6-terra",
-      "reasoningEffort": "medium"
+      "model": "openai/gpt-5.6-sol",
+      "reasoningEffort": "high"
     },
     "general": {
       "model": "openai/gpt-5.6-terra",
-      "reasoningEffort": "medium"
+      "reasoningEffort": "low"
     },
     "explore": {
       "model": "openai/gpt-5.6-terra",
-      "reasoningEffort": "medium"
+      "reasoningEffort": "low"
     }
   },
   "provider": {
