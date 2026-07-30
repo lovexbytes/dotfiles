@@ -442,3 +442,10 @@ platform_toolsets:
   - hermes-homeassistant
 plugins:
   enabled: []
+
+# Railway MCP uses OAuth. Authenticate after install with: hermes mcp login railway
+mcp_servers:
+  railway:
+    url: https://mcp.railway.com
+    connect_timeout: 60
+    auth: oauth

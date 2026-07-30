@@ -5,8 +5,8 @@ set -u
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LOG_FILE="${REPO_ROOT}/install-macos.log"
 
-OPTIONS=("ghostty" "hermes" "hunk" "kitty" "nvim" "oh-my-posh" "opencode" "ponytail" "rtk" "tmux")
-SELECTED=(0 0 0 0 0 0 0 0 0 0)
+OPTIONS=("ghostty" "hermes" "hunk" "kitty" "nvim" "oh-my-posh" "opencode" "ponytail" "railway" "rtk" "tmux")
+SELECTED=(0 0 0 0 0 0 0 0 0 0 0)
 
 log() {
   local level="$1"
@@ -153,6 +153,10 @@ is_installed_ponytail() {
   hermes plugins list 2>/dev/null | grep -Eq '^│ ponytail[[:space:]]+│ enabled|ponytail[[:space:]]+enabled'
 }
 
+is_installed_railway() {
+  command -v railway >/dev/null 2>&1
+}
+
 is_installed_rtk() {
   command -v rtk >/dev/null 2>&1
 }
@@ -271,6 +275,16 @@ install_vendor_ponytail() {
   hermes plugins install DietrichGebert/ponytail --enable || hermes plugins enable ponytail
 }
 
+install_vendor_railway() {
+  if command -v npm >/dev/null 2>&1; then
+    npm install -g @railway/cli
+    return $?
+  fi
+
+  log WARN "No npm found for Railway CLI vendor fallback."
+  return 1
+}
+
 install_vendor_rtk() {
   curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh
 }
@@ -358,6 +372,20 @@ apply_opencode_config() {
   log INFO "OpenCode config synced: $HOME/.config/opencode"
 }
 
+configure_railway_mcp() {
+  if ! command -v hermes >/dev/null 2>&1; then
+    log WARN "Hermes not found; skipping Railway MCP configuration for Hermes."
+  else
+    hermes config set mcp_servers.railway.url https://mcp.railway.com || return 1
+    hermes config set mcp_servers.railway.connect_timeout 60 || return 1
+    hermes config set mcp_servers.railway.auth oauth || return 1
+    log INFO "Railway MCP configured for Hermes. Authenticate with: hermes mcp login railway"
+  fi
+
+  apply_opencode_config
+  log INFO "Railway MCP configured for OpenCode. Authenticate with: opencode mcp auth railway"
+}
+
 configure_rtk_integrations() {
   if ! command -v rtk >/dev/null 2>&1; then
     log WARN "rtk not found; skipping RTK integration setup."
@@ -404,6 +432,9 @@ apply_config() {
       ;;
     ponytail)
       configure_ponytail_integrations
+      ;;
+    railway)
+      configure_railway_mcp
       ;;
     rtk)
       configure_rtk_integrations
@@ -456,6 +487,9 @@ install_item() {
         install_vendor_ponytail
       fi
       ;;
+    railway)
+      install_or_skip "railway" is_installed_railway formula railway install_vendor_railway
+      ;;
     rtk)
       install_or_skip "rtk" is_installed_rtk formula rtk install_vendor_rtk
       ;;
@@ -476,8 +510,8 @@ main() {
     if [ "${SELECTED[$i]}" -eq 1 ]; then
       any_selected=1
       log INFO "--- Processing ${OPTIONS[$i]} ---"
-      install_item "${OPTIONS[$i]}"
-      apply_config "${OPTIONS[$i]}"
+      install_item "${OPTIONS[$i]}" || return 1
+      apply_config "${OPTIONS[$i]}" || return 1
     fi
   done
 
