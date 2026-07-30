@@ -85,7 +85,7 @@ vim.keymap.set("n", "<leader>gd", function()
 
 	if hunk_terms[root] == nil then
 		hunk_terms[root] = Terminal:new({
-			cmd = "hunk diff --watch",
+			cmd = "hunk diff HEAD --watch",
 			dir = root,
 			direction = "float",
 			hidden = true,
