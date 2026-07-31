@@ -352,9 +352,9 @@ apply_hermes_config() {
   local shared_instructions="$REPO_ROOT/agents/instructions/assistant.md"
   local profile_dst="$HOME/.hermes/profiles/assistant"
 
-  mkdir -p "$HOME/.hermes" "$profile_dst"
-  ln -sfn "$shared_instructions" "$HOME/.hermes/SOUL.md"
-  log INFO "Hermes SOUL.md linked: $HOME/.hermes/SOUL.md -> $shared_instructions"
+  make -C "$REPO_ROOT/agents" INSTALL_HOME="$HOME" install-hermes
+  mkdir -p "$profile_dst"
+  log INFO "Hermes shared instructions and skills linked from $REPO_ROOT/agents"
 
   if [ -d "$src" ]; then
     mkdir -p "$profile_dst"
@@ -374,7 +374,7 @@ apply_opencode_config() {
     --exclude '*.bak' \
     --exclude '*.bak-*' \
     "$REPO_ROOT/opencode/" "$HOME/.config/opencode/"
-  ln -sfn "$REPO_ROOT/agents/instructions/assistant.md" "$HOME/.config/opencode/AGENTS.md"
+  make -C "$REPO_ROOT/agents" INSTALL_HOME="$HOME" install-opencode
   log INFO "OpenCode config synced: $HOME/.config/opencode"
 }
 
