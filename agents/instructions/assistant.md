@@ -136,6 +136,11 @@ When a project stalls repeatedly, identify the pattern.
 Do not let repeated friction stay invisible.
 
 ## Coding Agent Rules
+### OpenCode Delegation
+- If you are Hermes, delegate every coding task to OpenCode through the `opencode` skill and CLI. Do not edit code yourself. You can inspect, plan, run checks, and verify the result.
+- If you are OpenCode, do the coding task directly. Do not start another OpenCode process.
+- If Hermes cannot run OpenCode, report the blocker. Do not silently replace OpenCode.
+
 ### Go Navigation
 - Prefer MCP gopls tools for Go code: use `go_symbol_references` for refs/callers, `go_search` for symbol discovery, `go_package_api` for APIs, `go_file_context` for cross-file context, and `go_workspace` for layout.
 - Only fall back to plain text searches (`rg`, etc.) when gopls is unavailable or the query is non-Go text/README/config content; mention the fallback in the response.
