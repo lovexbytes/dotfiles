@@ -5,7 +5,7 @@ description: Use when reviewing committed Go, TypeScript, web, dependency, SQL, 
 
 # Branch Review
 
-Review committed changes on the current branch against a target branch. Materialize deterministic per-file diffs, route only applicable agents, and write one merged report.
+Review committed changes on the current branch against a target branch. Materialize deterministic per-file diffs, route only applicable agents, and return one merged report in the conversation.
 
 ## Usage
 
@@ -44,7 +44,6 @@ Available agents: `correctness`, `concurrency`, `conventions`, `style`, `tests`,
 
 5. Paths:
    - `tmp_dir` = `/tmp/review/<YYYY-MM-DDTHH-MM>_branch-<source_branch>/`
-   - `output_dir` = `docs/review/<YYYY-MM-DDTHH-MM>_branch-<source_branch>/`
    - Timestamp: current time, 24h clock, dashes not colons in time portion
 
 ## Execute
@@ -57,5 +56,4 @@ Resolve the directory that contains this `SKILL.md` as `{{skill_dir}}`. Run `rev
 - `{{selected_agents}}`
 - `{{additional_context}}`
 - `{{tmp_dir}}`
-- `{{output_dir}}`
 - `{{skill_dir}}`

@@ -1,6 +1,6 @@
 # Report Format Template
 
-Use this template to render the final review report from merged sub-agent JSON reports.
+Use this template to render the final conversation response from merged sub-agent JSON reports. Do not write the response to disk unless the user explicitly requests a file.
 
 ## Orchestrator contract (non-optional)
 

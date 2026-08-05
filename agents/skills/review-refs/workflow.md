@@ -11,7 +11,6 @@ Use this workflow for local working-tree and committed branch reviews.
 - `{{selected_agents}}`: all agents or the validated `--only` list
 - `{{additional_context}}`: optional user context
 - `{{tmp_dir}}`: temporary artifact directory
-- `{{output_dir}}`: persistent report directory
 - `{{skill_dir}}`: directory that contains the active `SKILL.md`
 
 ## Agents
@@ -49,7 +48,7 @@ Only launch agents whose `agent_plan` decision is `run`.
 ### 1. Create directories and resolve the repository
 
 ```bash
-mkdir -p "{{tmp_dir}}" "{{output_dir}}/reports"
+mkdir -p "{{tmp_dir}}/reports"
 git rev-parse --show-toplevel
 git config user.name
 git log "{{target_branch}}..HEAD" --format='%h %s' --no-merges
@@ -104,7 +103,7 @@ Pass the selected list only when `--only` was supplied.
 python3 "{{skill_dir}}/review-refs/bin/build-review-context.py" \
   --tmp-dir "{{tmp_dir}}" \
   --scope "{{scope}}" \
-  --reports-dir "{{output_dir}}/reports" \
+  --reports-dir "{{tmp_dir}}/reports" \
   [--selected "agent1,agent2"]
 ```
 
@@ -132,7 +131,7 @@ Input:
 - review context: {{tmp_dir}}/review-context.json
 - per-file diffs: {{tmp_dir}}/diffs/
 - repository root: {{repo_root}}
-- output report: {{output_dir}}/reports/{agent_name}.json
+- output report: {{tmp_dir}}/reports/{agent_name}.json
 
 Start with agent_plan.{agent_name}.files.
 Read changed files from the repository only when the diff is not enough.
@@ -165,7 +164,7 @@ Wait for all Wave 2 tasks.
 7. Mark each finding `in_scope` or `out_of_scope` with a reason.
 8. Exclude out-of-scope findings from the verdict.
 9. Merge and deduplicate `open_questions`. Keep at most ten.
-10. Save `{{output_dir}}/merged.json`.
+10. Keep the merged result in the orchestrator context. Do not write a merged report to disk.
 
 Verdict:
 
@@ -175,19 +174,20 @@ Verdict:
 
 ## Phase 5: Report
 
-Render `{{output_dir}}/review.md` with `review-refs/report-format.md`.
+Render the final response with `review-refs/report-format.md` and return it directly in the conversation.
+
+Do not write `review.md`, `merged.json`, or any review artifact inside the reviewed repository. Keep all machine-consumed artifacts under `{{tmp_dir}}`. Write a persistent report only when the user explicitly requests one and gives a destination path.
 
 Every finding must have either:
 
 - non-empty before and after snippets; or
 - `code_snippet_unavailable: true` and a concrete `code_absence_note`
 
-Report:
+End the response with:
 
 ```text
-Review complete: {{output_dir}}/review.md
-  Verdict: <verdict>
-  In scope: <critical> critical, <major> major, <minor> minor
-  Out of scope: <count>
-  Open questions: <count>
+Verdict: <verdict>
+In scope: <critical> critical, <major> major, <minor> minor
+Out of scope: <count>
+Open questions: <count>
 ```

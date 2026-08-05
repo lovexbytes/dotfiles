@@ -119,4 +119,4 @@ find "$tmp" -type l -print
 - Never commit credentials or private agent configuration.
 - Keep machine-specific paths out of shared configuration.
 - Keep generated files generated. Change their source and regenerate them.
-- Do not commit review reports unless they provide a useful audit record.
+- Review artifacts stay under `/tmp/review/` and must not be committed.

@@ -15,7 +15,7 @@ python3 review-refs/bin/build-review-context.py \
   --tmp-dir {{tmp_dir}} \
   --scope {{scope}} \
   --selected "{{selected_agents}}" \
-  --reports-dir {{output_dir}}/reports
+  --reports-dir {{tmp_dir}}/reports
 ```
 
 The builder also writes `contract-files.txt` from changed dependency, SQL, protobuf, API, build, CI, and deployment files.
@@ -58,7 +58,7 @@ The builder also writes `contract-files.txt` from changed dependency, SQL, proto
 - `--only` limits the selected set.
 - Every selected agent receives one deterministic `run` or `skip` decision.
 
-Skipped agents still write zero-finding reports. This keeps aggregation complete and makes the reason visible.
+Skipped agents still write temporary zero-finding reports under `{{tmp_dir}}/reports`. This keeps aggregation complete and makes the reason visible.
 
 ## File Access
 

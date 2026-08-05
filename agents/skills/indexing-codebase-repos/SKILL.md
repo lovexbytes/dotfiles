@@ -82,7 +82,7 @@ All of the following **must exist** (split across files as below). See [../index
 
 **Domain files:** Name files by domain (`docs/domains/payments.md`). If a domain is huge, split subpages and link from its domain hub section in `docs/index.md`.
 
-**Deep dives and existing docs:** Link useful top-level docs such as `developer-guide.md`, ADRs, rollout plans, or feature specs from `docs/index.md` or the relevant domain page. If a doc is stale, fix it, archive it outside the index path, or clearly mark it obsolete. Exclude transient generated artifacts (`docs/review/`, temporary plans, rendered reports) from the hub unless they are deliberately part of the maintained map.
+**Deep dives and existing docs:** Link useful top-level docs such as `developer-guide.md`, ADRs, rollout plans, or feature specs from `docs/index.md` or the relevant domain page. If a doc is stale, fix it, archive it outside the index path, or clearly mark it obsolete. Exclude transient generated artifacts, temporary plans, and rendered reports from the hub unless they are deliberately part of the maintained map.
 
 **Size:** Unbounded. Prefer **tables, bullet lists, and path pointers** over dumping large trees or full APIs.
 

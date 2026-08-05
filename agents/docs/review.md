@@ -25,7 +25,7 @@ Both skills use one shared workflow and one canonical support module at `skills/
 4. Run active agents in two waves.
 5. Validate and merge JSON reports.
 6. Classify findings as in scope or out of scope.
-7. Write one review report and verdict.
+7. Return one review report and verdict in the conversation.
 
 The review does not fetch merge requests or tickets. It uses only local Git and local repository files.
 
@@ -58,9 +58,9 @@ Each run writes:
 - `contract-files.txt`
 - `metadata.json`
 - `review-context.json`
-- `docs/review/<run>/reports/*.json`
-- `docs/review/<run>/merged.json`
-- `docs/review/<run>/review.md`
+- `reports/*.json`
+
+All artifacts stay under the temporary run directory. Normal reviews do not write files inside the reviewed repository. The final report is returned in the conversation. A persistent report is written only when the user explicitly requests one and gives a destination path.
 
 ## Routing
 
