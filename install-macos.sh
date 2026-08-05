@@ -328,6 +328,40 @@ install_or_skip() {
   return 1
 }
 
+ensure_gopls() {
+  if command -v gopls >/dev/null 2>&1; then
+    log INFO "gopls is already installed."
+    return 0
+  fi
+
+  if ensure_homebrew && brew_install formula gopls; then
+    log INFO "gopls installed via Homebrew."
+    return 0
+  fi
+
+  log ERROR "Failed to install gopls. Go MCP navigation would be unavailable."
+  return 1
+}
+
+configure_hermes_gopls_mcp() {
+  if hermes mcp test gopls >/dev/null 2>&1; then
+    log INFO "gopls MCP is already configured for the Hermes default profile."
+    return 0
+  fi
+
+  hermes mcp remove gopls >/dev/null 2>&1 || true
+  if ! printf '\n' | hermes mcp add gopls --command gopls --connect-timeout 30 --args mcp; then
+    log ERROR "Failed to add gopls MCP to the Hermes default profile."
+    return 1
+  fi
+  if ! hermes mcp test gopls >/dev/null 2>&1; then
+    log ERROR "gopls MCP did not pass the Hermes connection test."
+    return 1
+  fi
+
+  log INFO "gopls MCP configured for the Hermes default profile."
+}
+
 replace_dir_config() {
   local src="$1"
   local dst="$2"
@@ -349,19 +383,19 @@ replace_file_config() {
 
 apply_hermes_config() {
   local src="$REPO_ROOT/hermes/assistant"
-  local shared_instructions="$REPO_ROOT/agents/instructions/assistant.md"
   local profile_dst="$HOME/.hermes/profiles/assistant"
 
-  make -C "$REPO_ROOT/agents" INSTALL_HOME="$HOME" install-hermes
+  make -C "$REPO_ROOT/agents" INSTALL_HOME="$HOME" HERMES_PROFILE=assistant install-hermes
   mkdir -p "$profile_dst"
   log INFO "Hermes shared instructions and skills linked from $REPO_ROOT/agents"
 
   if [ -d "$src" ]; then
     mkdir -p "$profile_dst"
     cp -R "$src/". "$profile_dst/"
-    ln -sfn "$shared_instructions" "$profile_dst/SOUL.md"
     log INFO "Hermes assistant profile synced: $profile_dst"
   fi
+
+  configure_hermes_gopls_mcp
 }
 
 apply_opencode_config() {
@@ -462,8 +496,9 @@ install_item() {
         log INFO "hermes is already installed. Skipping installation."
       else
         log INFO "hermes not found. Installing from vendor script..."
-        install_vendor_hermes
+        install_vendor_hermes || return 1
       fi
+      ensure_gopls
       ;;
     hunk)
       if is_installed_hunk; then
@@ -490,7 +525,8 @@ install_item() {
       install_or_skip "oh-my-posh" is_installed_oh_my_posh formula oh-my-posh install_vendor_oh_my_posh
       ;;
     opencode)
-      install_or_skip "opencode" is_installed_opencode formula opencode install_vendor_opencode
+      install_or_skip "opencode" is_installed_opencode formula opencode install_vendor_opencode \
+        && ensure_gopls
       ;;
     ponytail)
       if is_installed_ponytail; then

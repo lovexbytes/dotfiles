@@ -443,8 +443,13 @@ platform_toolsets:
 plugins:
   enabled: []
 
-# Railway MCP uses OAuth. Authenticate after install with: hermes mcp login railway
+# gopls runs locally. Railway uses OAuth: hermes mcp login railway
 mcp_servers:
+  gopls:
+    command: gopls
+    args:
+    - mcp
+    connect_timeout: 30
   railway:
     url: https://mcp.railway.com
     connect_timeout: 60

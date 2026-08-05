@@ -48,6 +48,7 @@ When skills overlap, use the specific skill for the workflow and apply this styl
 - Accept interfaces where useful; return concrete types. Do not use pointers to interfaces.
 - Keep dependency interfaces at the package/module boundary. If the package already has `deps.go`, add new dependency interfaces there; when a new package introduces dependency interfaces, create `deps.go` so mock generation has a single source.
 - Keep signatures short. Use config or options structs when parameters are numerous, optional, or easy to mix up.
+- If parameters already belong to one input or domain struct, pass that struct through layers instead of splitting and rebuilding it.
 - Put `context.Context` first and do not store it.
 - Prefer explicit dependencies over mutable package state. Avoid `init()` for real logic.
 - Do not export types only for tests.
@@ -58,7 +59,8 @@ When skills overlap, use the specific skill for the workflow and apply this styl
 
 - Avoid stutter, redundant type words, vague names, and unnecessary aliases.
 - Prefer singular names for structs and interfaces that model one concept or protocol. Use plural names only for real collections, batches, or multi-item operations.
-- Use nouns for values, verbs for side-effecting functions, and keep variable scope tight.
+- Use nouns for values, verbs for functions and methods, and keep variable scope tight.
+- Method and function names for new code must start with a verb, even when nearby legacy code does not.
 - Avoid shadowing important values such as `ctx` and `err`.
 - Make zero values useful when possible.
 - `nil` is a valid slice. Return empty slices only when a contract requires it.

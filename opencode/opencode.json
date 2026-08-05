@@ -267,6 +267,15 @@
     "@dietrichgebert/ponytail"
   ],
   "mcp": {
+    "gopls": {
+      "type": "local",
+      "command": [
+        "gopls",
+        "mcp"
+      ],
+      "enabled": true,
+      "timeout": 30000
+    },
     "railway": {
       "type": "remote",
       "url": "https://mcp.railway.com"

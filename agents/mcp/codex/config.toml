@@ -1,9 +1,0 @@
-# Copy this section into ~/.codex/config.toml after Codex is installed.
-# Replace the placeholder before restarting Codex.
-
-[mcp_servers.gopls]
-command = "<PATH TO GOPLS, e.g.: /Users/admin/go/bin/gopls>"
-args = ["mcp"]
-type = "stdio"
-enabled = true
-startup_timeout_sec = 30

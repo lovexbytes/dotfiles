@@ -64,6 +64,25 @@ Common layouts include:
 9. Transaction lock:
    `SELECT ... FOR UPDATE`
 
+## Storage Method Boundary
+
+- Treat a generated sqlc params struct as the storage-layer contract.
+- Let callers prepare the generated params struct. Do not split it into scalar storage arguments and rebuild it inside storage.
+- Use a thin local wrapper only when the repository already uses that pattern.
+- For a paired list and count operation, accept the list params and derive count params inside storage. Do not add a second params object only for the count call.
+- Put shared params preparation in the caller, service, or use-case layer.
+
+## Structured JSON and JSONB
+
+- Prefer typed Go structs over `string`, `[]byte`, or `json.RawMessage` for known JSON shapes.
+- Keep hand-written types in a non-generated file in the generated sqlc package, such as `custom_types.go`.
+- Add the matching column or database-type override in `sqlc.yaml`, then regenerate.
+- Keep JSONB as JSONB in SQL. Do not cast it to text only to decode it in Go.
+- With `sql_package: "pgx/v5"`, let pgx encode and decode native JSON and JSONB values.
+- Do not add `Scan` or `Value` methods for native JSON or JSONB without a demonstrated need.
+- Implement `driver.Valuer` only when pgx cannot encode the bind target, such as a custom PostgreSQL domain OID.
+- Map storage JSON types to public DTOs at the API boundary.
+
 ## Generation Commands
 
 Use the repository's pinned or implied `sqlc` version:
@@ -109,3 +128,6 @@ When no wrapper exists, run sqlc directly against each affected config:
 - overusing positional `$1/$2` and getting weak parameter names like `dollar_1`
 - regenerating only one sqlc package when multiple are affected
 - assuming `make` or `go generate` behavior instead of checking the repository
+- splitting one generated params struct into many scalar storage arguments
+- casting JSONB to text and decoding it manually
+- adding redundant `Scan` or `Value` methods for native JSON or JSONB

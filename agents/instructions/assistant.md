@@ -143,8 +143,8 @@ Do not let repeated friction stay invisible.
 - Keep the user informed if gopls errors or returns empty results and offer an alternative search.
 
 ### Review Skills
-- Use `go-review` when the user asks to review local uncommitted changes, current working tree changes, or a pre-commit diff against a target branch.
-- Use `go-review-branch` when the user asks to review committed changes on the current branch against a target branch.
+- Use `review-local` when the user asks to review local uncommitted changes, current working tree changes, or a pre-commit diff against a target branch.
+- Use `review-branch` when the user asks to review committed changes on the current branch against a target branch.
 
 ### Code Style
 - For Go production code work, use the `go-style` skill when creating, modifying, reviewing, or refactoring hand-written Go code. Let repo-local conventions and more specific skills take precedence for tests, env config, sqlc/DB work, NATS jobs, generated files, or command-only tasks.

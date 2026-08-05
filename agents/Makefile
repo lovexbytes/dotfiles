@@ -8,10 +8,14 @@ INSTALL_HOME ?= $(HOME)
 OPENCODE_SKILLS_ROOT := $(INSTALL_HOME)/.config/opencode/skills
 OPENCODE_AGENTS := $(INSTALL_HOME)/.config/opencode/AGENTS.md
 HERMES_SKILLS_ROOT := $(INSTALL_HOME)/.hermes/skills
-HERMES_SKILL_NAMES := grill-me
+HERMES_SKILL_NAMES := $(SKILL_NAMES)
 HERMES_SOUL := $(INSTALL_HOME)/.hermes/SOUL.md
+HERMES_PROFILE ?= assistant
+HERMES_PROFILE_ROOT := $(INSTALL_HOME)/.hermes/profiles/$(HERMES_PROFILE)
+HERMES_PROFILE_SKILLS_ROOT := $(HERMES_PROFILE_ROOT)/skills
+HERMES_PROFILE_SOUL := $(HERMES_PROFILE_ROOT)/SOUL.md
 
-.PHONY: list-skills install-opencode-skills install-opencode-instructions install-hermes-skills install-hermes-instructions install-opencode install-hermes install
+.PHONY: list-skills install-opencode-skills install-opencode-instructions install-hermes-skills install-hermes-instructions install-hermes-profile-skills install-hermes-profile-instructions install-opencode install-hermes install
 
 list-skills:
 	@set -- $(SKILL_NAMES); \
@@ -67,10 +71,16 @@ install-hermes-instructions:
 		exit 1; \
 	fi
 	@ln -sfn "$(INSTRUCTIONS_SRC)" "$(HERMES_SOUL)"
-	@echo "linked Hermes default SOUL to $(HERMES_SOUL)"
+	@echo "linked Hermes SOUL to $(HERMES_SOUL)"
+
+install-hermes-profile-skills:
+	@$(MAKE) HERMES_SKILLS_ROOT="$(HERMES_PROFILE_SKILLS_ROOT)" install-hermes-skills
+
+install-hermes-profile-instructions:
+	@$(MAKE) HERMES_SOUL="$(HERMES_PROFILE_SOUL)" install-hermes-instructions
 
 install-opencode: install-opencode-skills install-opencode-instructions
 
-install-hermes: install-hermes-skills install-hermes-instructions
+install-hermes: install-hermes-skills install-hermes-instructions install-hermes-profile-skills install-hermes-profile-instructions
 
 install: install-opencode install-hermes
