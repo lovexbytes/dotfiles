@@ -15,15 +15,16 @@ require("conform").setup({
 		go = { "goimports", "gofmt" },
 		sql = { "sql_formatter" },
 		ddl = { "sql_formatter" },
+		cucumber = { lsp_format = "last" },
 		-- Use the "*" filetype to run formatters on all filetypes.
 		["*"] = { "codespell" },
 		-- Use the "_" filetype to run formatters on filetypes that don't
 		-- have other formatters configured.
 		["_"] = { "trim_whitespace" },
 	},
+	default_format_opts = { lsp_format = "fallback" },
 	-- Configure format_on_save to FILTER OUT JS/TS types
 	format_on_save = {
-		lsp_fallback = true, -- Apply these options to the files that *do* run conform automatically
 		timeout_ms = 500,
 		-- Filter function: return 'false' to SKIP automatic formatting for these filetypes
 		filter = function(bufnr)

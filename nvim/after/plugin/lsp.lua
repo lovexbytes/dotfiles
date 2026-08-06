@@ -17,6 +17,9 @@ vim.diagnostic.config({ update_in_insert = true })
 -- Set up default keymaps on attach
 lsp.on_attach(function(client, bufnr)
 	lsp.default_keymaps({ buffer = bufnr })
+	if client.name == "cucumber_language_server" then
+		vim.keymap.set({ "n", "v" }, "gd", vim.lsp.buf.definition, { buffer = bufnr })
+	end
 end)
 
 -- Configure mason
@@ -27,6 +30,15 @@ require("mason").setup({
 })
 
 -- Configure mason-lspconfig
+vim.lsp.config("cucumber_language_server", {
+	settings = {
+		cucumber = {
+			features = { "**/features/**/*.feature" },
+			glue = { "**/test/cucumber/**/*.go", "**/*_test.go" },
+		},
+	},
+})
+
 require("mason-lspconfig").setup({
 	ensure_installed = {
 		-- "tsserver",
@@ -41,6 +53,7 @@ require("mason-lspconfig").setup({
 		"lua_ls",
 		"yamlls",
 		"svelte",
+		"cucumber_language_server",
 	},
 	handlers = {
 		lsp.default_setup,
