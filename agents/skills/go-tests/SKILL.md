@@ -42,10 +42,12 @@ Load [references/bdd-patterns.md](references/bdd-patterns.md) when testing branc
 
 ## Test Design Rules
 
+- Apply the Principle of Least Astonishment (POLA). A reader must understand the test name, inputs, setup, action, and expected outcome at a high level without reading helpers, fixtures, or test implementation.
 - Keep table rows declarative and data-only.
 - Do not put setup closures or imperative behavior into table cases.
 - If one table case needs custom sequencing or setup, make it a standalone test or switch to BDD.
 - In BDD suites, model the behavior path: parent/shared setup is only for technical lifecycle and other non-causal setup; keep business prerequisites and causal values visible in the scenario or narrow behavior branch that uses them. Child `When` branches add the next failure or success branch and keep setup narrow.
+- Give each BDD edge case an explicit step with its business meaning. Do not use empty tables, omitted rows, sentinel values, or hidden step behavior to mean a distinct state. For example, use `Given sender 7 owns transfer 12 with no recipients` instead of a recipients-table step with no rows.
 - Prefer visible outcomes, durable effects, and exact causal keys when they are part of the contract.
 - Use real boundaries through existing repository harnesses. Do not add test-only interfaces or seams only to support substitution.
 - Use the repo's assertion style: `Expect` in Ginkgo, `require` for prerequisites in `testing`/`testify`, and `assert` for follow-up checks.
