@@ -156,7 +156,7 @@ Do not let repeated friction stay invisible.
 - For repo/app config work in Go, especially `config.go`, environment variables, `mapstructure` tags, viper, or servkit `config.Loader`, use `go-env-cfg` before creating, editing, or reviewing the config. Verify the derived env var names from struct nesting and tags.
 
 ### Testing
-- For Go test work, use the `go-tests` skill when creating, modifying, reviewing, debugging, or choosing coverage for Go tests, and when a Go behavior change needs test updates. Follow nearby test patterns first, then choose table tests, BDD/gomock, or integration coverage based on the boundary under test.
+- For Go test work, use the `go-tests` skill when creating, modifying, reviewing, debugging, or choosing coverage for Go tests, and when a Go behavior change needs test updates. Follow nearby test patterns first, then select a structure and the smallest real boundary that proves the behavior.
 
 ### Database Work
 - Use `db-postgresql` for Postgres schema/data inspection, Docker Compose Postgres startup, migrations, indexes, enums, backfills, or migration SQL files; derive DB name/credentials from repository Compose/config. Pair with `db-sqlc` when repository SQL or generated sqlc output changes.
