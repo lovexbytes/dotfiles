@@ -384,12 +384,17 @@ replace_file_config() {
 apply_hermes_config() {
   local skin_src="$REPO_ROOT/hermes/skins/vesper.yaml"
   local skin_dst="$HOME/.hermes/skins/vesper.yaml"
+  local plugin_src="$REPO_ROOT/hermes/desktop-plugins/vesper-desktop/plugin.js"
+  local plugin_dst="$HOME/.hermes/desktop-plugins/vesper-desktop/plugin.js"
 
   make -C "$REPO_ROOT/agents" INSTALL_HOME="$HOME" install-hermes
   log INFO "Hermes shared instructions and skills linked from $REPO_ROOT/agents"
 
   if [ -f "$skin_src" ]; then
     replace_file_config "$skin_src" "$skin_dst"
+  fi
+  if [ -f "$plugin_src" ]; then
+    replace_file_config "$plugin_src" "$plugin_dst"
   fi
 
   hermes config set display.skin vesper

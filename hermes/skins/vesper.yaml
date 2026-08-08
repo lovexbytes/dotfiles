@@ -13,6 +13,7 @@ colors:
   banner_text: "#FFFFFF"
   ui_accent: "#FFC799"
   ui_label: "#FFC799"
+  ui_tool: "#99FFE4"
   ui_ok: "#99FFE4"
   ui_error: "#FF8080"
   ui_warn: "#FFC799"
@@ -34,6 +35,11 @@ colors:
   completion_menu_current_bg: "#232323"
   completion_menu_meta_bg: "#101010"
   completion_menu_meta_current_bg: "#232323"
+  syntax_string: "#99FFE4"
+  diff_added: "#14211F"
+  diff_added_word: "#99FFE4"
+  diff_removed: "#241616"
+  diff_removed_word: "#FF8080"
 
 spinner:
   waiting_faces:
