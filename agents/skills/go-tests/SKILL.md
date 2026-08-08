@@ -56,6 +56,7 @@ Load [references/bdd-patterns.md](references/bdd-patterns.md) when testing branc
 - Prefer full-struct `Equal` assertions over field-by-field checks when the whole result is the behavior.
 - When expecting an error, assert the observable error and any durable state the contract defines. Do not check partial outputs unless the contract defines them.
 - Use fixed, visible data. Override only fields needed to drive the path.
+- For unit, integration, and BDD tests, when production uses a named production-owned boundary value through a constant, variable, config field, or policy accessor, reuse or derive from that value for any behavior-test setup, input, or expectation that depends on it. Do not copy its current literal or define a mirror test constant. A test can use a production inline literal. A policy-contract test can use a literal to lock the exact value. In BDD, name inaccessible source-language boundaries symbolically and derive concrete data in step code. If the production value is inaccessible at the test boundary, stop and raise a blocker before you export it, add an accessor, or change package boundaries.
 
 ## Verification
 
