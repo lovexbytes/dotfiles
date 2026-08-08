@@ -38,7 +38,6 @@ The installer refuses to replace a real directory or file at an install target. 
 |---|---|---|
 | OpenCode | `~/.config/opencode/skills/<skill>` | `~/.config/opencode/AGENTS.md` |
 | Hermes default profile | `~/.hermes/skills/<skill>` | `~/.hermes/SOUL.md` |
-| Hermes `assistant` profile | `~/.hermes/profiles/assistant/skills/<skill>` | `~/.hermes/profiles/assistant/SOUL.md` |
 
 ## Skills
 

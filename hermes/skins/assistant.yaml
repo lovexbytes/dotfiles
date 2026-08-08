@@ -2,6 +2,9 @@ name: assistant
 description: Mint + orange dark skin with Assistant branding
 
 colors:
+  background: "#101010"
+  ui_text: "#FFFFFF"
+  ui_border: "#99FFE4"
   banner_border: "#99FFE4"
   banner_title: "#FFC799"
   banner_accent: "#99FFE4"

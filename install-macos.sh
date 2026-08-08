@@ -382,18 +382,17 @@ replace_file_config() {
 }
 
 apply_hermes_config() {
-  local src="$REPO_ROOT/hermes/assistant"
-  local profile_dst="$HOME/.hermes/profiles/assistant"
+  local skin_src="$REPO_ROOT/hermes/skins/assistant.yaml"
+  local skin_dst="$HOME/.hermes/skins/assistant.yaml"
 
-  make -C "$REPO_ROOT/agents" INSTALL_HOME="$HOME" HERMES_PROFILE=assistant install-hermes
-  mkdir -p "$profile_dst"
+  make -C "$REPO_ROOT/agents" INSTALL_HOME="$HOME" install-hermes
   log INFO "Hermes shared instructions and skills linked from $REPO_ROOT/agents"
 
-  if [ -d "$src" ]; then
-    mkdir -p "$profile_dst"
-    cp -R "$src/". "$profile_dst/"
-    log INFO "Hermes assistant profile synced: $profile_dst"
+  if [ -f "$skin_src" ]; then
+    replace_file_config "$skin_src" "$skin_dst"
   fi
+
+  hermes config set display.skin assistant
 
   configure_hermes_gopls_mcp
 }
