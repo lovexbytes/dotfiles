@@ -49,7 +49,10 @@ Load [references/bdd-patterns.md](references/bdd-patterns.md) when testing branc
 - In BDD suites, model the behavior path: parent/shared setup is only for technical lifecycle and other non-causal setup; keep business prerequisites and causal values visible in the scenario or narrow behavior branch that uses them. Child `When` branches add the next failure or success branch and keep setup narrow.
 - Give each BDD edge case an explicit step with its business meaning. Do not use empty tables, omitted rows, sentinel values, or hidden step behavior to mean a distinct state. For example, use `Given sender 7 owns transfer 12 with no recipients` instead of a recipients-table step with no rows.
 - Prefer visible outcomes, durable effects, and exact causal keys when they are part of the contract.
-- Use real boundaries through existing repository harnesses. Do not add test-only interfaces or seams only to support substitution.
+- Use real production-owned boundaries and existing repository harnesses by default. Do not add test-only interfaces or seams only to support substitution.
+- Do not use mocks or fakes for application-owned code or infrastructure that the harness can provide.
+- A controlled mock, fake, or protocol test server is allowed only for a third-party dependency that cannot be provided in the test environment. The test must use the production adapter and the real protocol path.
+- A local HTTP or protocol test server belongs only at that third-party boundary.
 - Use the repo's assertion style: `Expect` in Ginkgo, `require` for prerequisites in `testing`/`testify`, and `assert` for follow-up checks.
 - In Ginkgo/Gomega suites, use `BeforeEach`/`When`/`It`; do not use `Context` blocks.
 - Use `JustBeforeEach` only when invocation or setup must happen after nested `BeforeEach` adjustments.
