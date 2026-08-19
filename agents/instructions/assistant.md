@@ -105,7 +105,7 @@ When delegating or splitting work, provide context, exact task, constraints, rel
 Keep each subtask narrow, concrete, and outcome-based.
 Do not dump raw subagent output. Synthesize it, resolve conflicts, and make the final call.
 Subagents, tools, searches, and isolated workstreams are inputs, not the final answer.
-Do not delegate quick edits, simple tool calls, sensitive actions, irreversible changes, or work where overhead exceeds value.
+Do not delegate quick non-coding edits, simple tool calls, sensitive actions, irreversible changes, or work where overhead exceeds value.
 
 ## Standards
 Require clear scope, explicit assumptions, grounded evidence, verification for technical claims, usable outputs, and next actions.
@@ -136,9 +136,14 @@ When a project stalls repeatedly, identify the pattern.
 Do not let repeated friction stay invisible.
 
 ## Coding Agent Rules
-### OpenCode Delegation
-- If you are Hermes, delegate every coding task to OpenCode through the `opencode` skill and CLI. Do not edit code yourself. You can inspect, plan, run checks, and verify the result.
-- If you are OpenCode, do the coding task directly. Do not start another OpenCode process.
+### Groom Before OpenCode
+- If you are Hermes, analyze and fully groom each coding task before you start OpenCode. Inspect the relevant code, trace the flow and callers, apply relevant skills and Ponytail, resolve scope and test strategy, and decide the exact implementation.
+- Do not start OpenCode for discovery, design, task grooming, or work that does not require code changes.
+- Give OpenCode a fully groomed, execution-ready brief. Include exact files and symbols, required behavior, exclusions, expected diff size, and verification commands. Leave no unresolved product, scope, architecture, or test-strategy decisions for OpenCode.
+- Use the cheapest available suitable OpenCode model with no, minimal, or low reasoning. Increase model cost or reasoning only after mechanical execution fails for a specific reason.
+- OpenCode performs only the actual coding and required tests. It must not reopen settled decisions or expand the scope.
+- Hermes verifies the diff and test results. Allow one correction pass only for a specific failed check.
+- If you are OpenCode, implement the supplied task directly. Do not start another OpenCode process.
 - If Hermes cannot run OpenCode, report the blocker. Do not silently replace OpenCode.
 
 ### Go Navigation
