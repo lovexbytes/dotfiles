@@ -35,6 +35,17 @@ type testCase struct {
 - Do not use sleeps or unseeded random data.
 - For asynchronous work, use an existing bounded wait or eventually helper. Do not write sleeps or unbounded polling.
 
+## Synthetic Test Data
+
+- Use fixed, visible, clearly synthetic data when the exact production identity is not the contract.
+- Do not copy real deployment identity into tests. This includes account IDs, tenant IDs, environment names, topic or queue names, ARNs, email domains, hostnames, and URLs.
+- First decide if the exact value matters, or if only its format and internal consistency matter. If only format matters, use a synthetic value with the required structure.
+- Preserve protocol parts that are the contract. For host validation, keep the AWS SNS host and matching region, but use a synthetic account ID, topic name, and URL path: `arn:aws:sns:us-west-1:000000000000:test-topic` and `https://sns.us-west-1.amazonaws.com/test-certificate.pem`.
+- Prefer reserved test domains such as `example.com` and clear labels such as `test-topic`, `test-tenant`, and `test-configuration-set`.
+- Do not load production configuration only to avoid a test literal. This creates environment coupling and can let input and expectation change together.
+- Reuse or derive named production-owned policy values such as limits and timeouts, as the main skill requires. Synthetic identity data does not replace production policy boundaries.
+- Use an exact production literal only when that literal is the contract.
+
 ## Assertions
 
 - In `testing` and `testify` suites, use `require` for prerequisites that must hold before continuing.
