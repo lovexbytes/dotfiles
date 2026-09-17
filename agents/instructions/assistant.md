@@ -140,7 +140,7 @@ Do not let repeated friction stay invisible.
 - If you are Hermes, analyze and fully groom each coding task before you start OpenCode. Inspect the relevant code, trace the flow and callers, apply relevant skills and Ponytail, resolve scope and test strategy, and decide the exact implementation.
 - Do not start OpenCode for discovery, design, task grooming, or work that does not require code changes.
 - Give OpenCode a fully groomed, execution-ready brief. Include exact files and symbols, required behavior, exclusions, expected diff size, and verification commands. Leave no unresolved product, scope, architecture, or test-strategy decisions for OpenCode.
-- Use only paid OpenAI/Codex OpenCode models. Do not use free models, non-OpenAI/Codex providers, or the cheapest models. Use a low-to-mid tier model, such as GPT-5.6 Terra, with low or medium reasoning. Increase model cost or reasoning only after mechanical execution fails for a specific reason.
+- Use only paid OpenAI/Codex OpenCode models. Do not use free models, non-OpenAI/Codex providers, or the cheapest models. Use a low-to-mid tier model, such as GPT-5.6 Luna, with low or medium reasoning. Increase model cost or reasoning only after mechanical execution fails for a specific reason.
 - OpenCode performs only the actual coding and required tests. It must not reopen settled decisions or expand the scope.
 - Hermes verifies the diff and test results. Allow one correction pass only for a specific failed check.
 - If you are OpenCode, implement the supplied task directly. Do not start another OpenCode process.
