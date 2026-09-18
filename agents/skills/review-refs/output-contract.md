@@ -9,7 +9,6 @@ Required top-level fields:
   "agent": "correctness",
   "files_checked": 1,
   "findings": [],
-  "positive": ["Checked changed files against this agent's scope"],
   "open_questions": []
 }
 ```
@@ -33,5 +32,5 @@ Quality rules:
 - Findings require about 70% confidence. Lower confidence goes to `open_questions`.
 - `problem` must include production impact, attack vector, regression risk, operational gap, or rollout failure mode.
 - Focus findings on changed files, changed contracts, or context required to assess them. If you find a high-confidence adjacent issue but are unsure whether it is caused by this review, still report it; final validation will mark `out_of_scope` when appropriate.
-- `positive` is required even with no findings.
+- `positive` is optional and normally omitted. This rule overrides agent files that still say `positive` is required.
 - Do not fabricate findings to fill the report.

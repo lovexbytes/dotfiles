@@ -126,26 +126,25 @@ Group by severity (critical → major → minor), then agent category. For each 
 
 ## Distributed Operations Review
 
-Populate from in-scope `distributed-operations` agent findings. Cover: idempotency, retry safety, replay/reprocessing safety, timeout-budget propagation, degraded dependency behavior, durable handoff, ordering, and compensation.
+Render only when `distributed-operations` ran. Populate from its in-scope findings. Cover: idempotency, retry safety, replay/reprocessing safety, timeout-budget propagation, degraded dependency behavior, durable handoff, ordering, and compensation.
 
 State one of:
 
 - `No distributed-operations safety issues found.`
 - `Only out-of-scope distributed-operations concerns were found; see Out Of Scope Findings.`
-- `Distributed-operations review was not run: {reason}. See Verification.`
+- `Distributed-operations review did not complete: {reason}. See Verification.`
 - A short paragraph describing the runtime-safety concerns, including concrete retry, replay, timeout, or degraded-dependency failure modes.
 
 ---
 
 ## Backward Compatibility Review
 
-Populate from in-scope `compatibility` agent findings and from any in-scope cross-binary / cross-service concerns raised by `consistency`. Cover: HTTP/gRPC contract, event schema, DB migration, Redis/cache format, config keys, rollout order, rollback safety.
+Render only when `compatibility` ran. Populate from its in-scope findings and from any in-scope cross-binary / cross-service concerns raised by `consistency`. Cover: HTTP/gRPC contract, event schema, DB migration, Redis/cache format, config keys, rollout order, rollback safety.
 
 State one of:
 
 - `No backward compatibility issues found.`
 - `Only out-of-scope backward compatibility concerns were found; see Out Of Scope Findings.`
-- `Backward compatibility review was not run: {reason}. See Verification.`
 - `Backward compatibility review did not complete: {reason}. See Verification.`
 - A short paragraph describing the concerns, including concrete mixed-version or rollback failure modes and the required rollout order (if any).
 
@@ -158,14 +157,6 @@ Merge `open_questions` arrays from all agent reports. Deduplicate by meaning. Ca
 For each question, prefix with the agent name:
 
 - **[{agent}]** {question or residual risk note}
-
----
-
-## What Was Done Well
-
-Merge `positive` arrays from all agent reports. Deduplicate. Present as bullet list:
-
-- {positive observation from agent}
 
 ---
 
@@ -184,7 +175,7 @@ Summarize what was or was not exercised during this review:
 - **Ran:** commands the orchestrator or its agents actually executed (e.g. `go test ./...`, `go test -race ./internal/operations/...`, `golangci-lint run`, `go build`). If none, say `None.`.
 - **Passed:** commands above that exited zero (or equivalent success signal).
 - **Could not verify:** list every `requires_verification: true` finding (title + file:line) and the reason it needs manual follow-up. Also list any agent that failed in Phase 2/3 with its category unreviewed.
-- **Gaps:** call out any review dimension skipped due to `--only`, conservative router skip, unavailable tooling, or missing context.
+- **Gaps:** summarize skipped areas compactly due to `--only`, conservative router skip, unavailable tooling, or missing context. Do not emit one bullet per absent agent.
 
 If nothing was run and everything is derived from static review of the diff, state: `Static review only; no commands executed by the orchestrator.`
 

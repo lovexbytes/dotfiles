@@ -50,6 +50,42 @@ def write_index(tmp: Path, paths: list[str], contract_paths: list[str] | None = 
 
 
 class ReviewRouterTests(unittest.TestCase):
+    def test_backend_typescript_runs_shared_backend_and_contract_agents(self) -> None:
+        router = load_script("build-review-context.py", "review_router_backend_ts")
+        with tempfile.TemporaryDirectory() as raw:
+            tmp = Path(raw)
+            write_index(tmp, ["server/users/service.ts"])
+            ctx = router.build(tmp, "local", None)
+
+        required_agents = (
+            "correctness",
+            "concurrency",
+            "conventions",
+            "style",
+            "performance",
+            "security",
+            "consistency",
+            "observability",
+            "sql-data-access",
+            "transactions",
+            "compatibility",
+            "distributed-operations",
+            "domain-invariants",
+        )
+        for agent in required_agents:
+            self.assertEqual(ctx["agent_plan"][agent]["decision"], "run")
+            self.assertEqual(ctx["agent_plan"][agent]["files"], ["server/users/service.ts"])
+
+    def test_mixed_frontend_and_backend_typescript_routes_each_path(self) -> None:
+        router = load_script("build-review-context.py", "review_router_mixed_ts")
+        with tempfile.TemporaryDirectory() as raw:
+            tmp = Path(raw)
+            write_index(tmp, ["client/components/Form.tsx", "server/users/service.ts"])
+            ctx = router.build(tmp, "local", None)
+
+        self.assertEqual(ctx["agent_plan"]["correctness"]["files"], ["server/users/service.ts"])
+        self.assertEqual(ctx["agent_plan"]["web-accessibility"]["files"], ["client/components/Form.tsx"])
+
     def test_typescript_ui_runs_typescript_web_and_tests_without_go(self) -> None:
         router = load_script("build-review-context.py", "review_router_ts")
         with tempfile.TemporaryDirectory() as raw:
@@ -235,6 +271,18 @@ class DiffMaterializerTests(unittest.TestCase):
         self.assertEqual(index["files"][0]["status"], "renamed")
         self.assertTrue(index["files"][0]["is_source"])
         self.assertEqual(ctx["agent_plan"]["typescript"]["decision"], "run")
+
+
+class SkipReportTests(unittest.TestCase):
+    def test_write_skip_reports_does_not_create_reports(self) -> None:
+        router = load_script("build-review-context.py", "review_router_skip_reports")
+        with tempfile.TemporaryDirectory() as raw:
+            reports = Path(raw) / "reports"
+            count = router.write_skip_reports({"agent_plan": {"security": {"decision": "skip", "reason": "no source"}}}, reports)
+
+            self.assertEqual(count, 0)
+            self.assertTrue(reports.exists())
+            self.assertEqual(list(reports.glob("*.json")), [])
 
 
 if __name__ == "__main__":

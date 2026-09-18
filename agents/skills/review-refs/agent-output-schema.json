@@ -3,7 +3,7 @@
   "title": "SubAgentReport",
   "description": "Review sub-agent JSON output",
   "type": "object",
-  "required": ["agent", "files_checked", "findings", "positive"],
+  "required": ["agent", "files_checked", "findings"],
   "properties": {
     "agent": {
       "type": "string",
@@ -102,7 +102,7 @@
     "positive": {
       "type": "array",
       "items": { "type": "string" },
-      "minItems": 1
+      "description": "Optional positive observations."
     },
     "open_questions": {
       "type": "array",

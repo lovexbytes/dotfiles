@@ -50,7 +50,7 @@ The builder also writes `contract-files.txt` from changed dependency, SQL, proto
 
 ## Routing
 
-- Go source runs Go agents.
+- Go source runs Go agents. Backend TypeScript or JavaScript runs the generic backend agents with only backend paths.
 - TypeScript or JavaScript source runs `typescript` and `tests`.
 - Frontend source, including TypeScript under known frontend paths, runs the four `web-*` agents.
 - Dependency, lock, build, or CI changes run `deps-supply-chain`.
@@ -58,7 +58,7 @@ The builder also writes `contract-files.txt` from changed dependency, SQL, proto
 - `--only` limits the selected set.
 - Every selected agent receives one deterministic `run` or `skip` decision.
 
-Skipped agents still write temporary zero-finding reports under `{{tmp_dir}}/reports`. This keeps aggregation complete and makes the reason visible.
+Skipped agents remain in `agent_plan` for one compact Verification gap summary. They do not get report files.
 
 ## File Access
 

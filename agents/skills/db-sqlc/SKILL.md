@@ -76,7 +76,9 @@ Common layouts include:
 
 - Prefer typed Go structs over `string`, `[]byte`, or `json.RawMessage` for known JSON shapes.
 - Keep hand-written types in a non-generated file in the generated sqlc package, such as `custom_types.go`.
+- A custom type in the generated package uses a bare type name to avoid a self-import.
 - Add the matching column or database-type override in `sqlc.yaml`, then regenerate.
+- An aggregate or expression alias cannot use a simple column override. Cast it to a named PostgreSQL type or domain with a `db_type` override.
 - Keep JSONB as JSONB in SQL. Do not cast it to text only to decode it in Go.
 - With `sql_package: "pgx/v5"`, let pgx encode and decode native JSON and JSONB values.
 - Do not add `Scan` or `Value` methods for native JSON or JSONB without a demonstrated need.

@@ -42,6 +42,7 @@ Wave 2:
 - `domain-invariants`
 
 Only launch agents whose `agent_plan` decision is `run`.
+Only agents that run produce reports. Missing skip files are not failures.
 
 ## Phase 1: Materialize and Route
 
@@ -111,8 +112,6 @@ The router writes:
 
 - `review-context.json`
 - `contract-files.txt`
-- valid empty reports for skipped selected agents
-
 Stop when both `changed_source_files` and `contract_files` are empty. Report that no reviewable changes were found.
 
 ## Phase 2: Wave 1
@@ -137,7 +136,7 @@ Start with agent_plan.{agent_name}.files.
 Read changed files from the repository only when the diff is not enough.
 For deleted files, use the diff and `git show {{target_branch}}:<old_path>` when full prior context is necessary.
 For Go symbol, API, and caller questions, use gopls MCP tools when available. Use file search for non-Go text or when gopls fails, and state the fallback if it affects confidence.
-Read only the extra context required by review-refs/context-rules/{agent_name}.md.
+Read only the extra context required by review-refs/context-rules/{agent_name}.md. For a generic backend agent whose plan files are TypeScript or JavaScript, read `context-rules/backend-ts.md` and apply its matching section instead of the Go-specific `context-rules/{agent_name}.md`. For Go and other files, use the existing agent context rule.
 
 Author context:
 {{additional_context}}
@@ -155,9 +154,9 @@ Wait for all Wave 2 tasks.
 
 ## Phase 4: Merge and Validate
 
-1. Read every selected-agent report.
+1. Read reports only for agents whose decision is `run`.
 2. Validate the required fields and agent-specific ID prefixes.
-3. Merge findings and positive notes.
+3. Merge findings.
 4. Deduplicate only when file, line, mechanism, and fix direction match.
 5. Keep the higher severity. Keep the clearer explanation. Record the other agent as supporting evidence.
 6. Apply `review-refs/scope-validation.md` to every finding.

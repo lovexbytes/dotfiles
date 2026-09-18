@@ -11,22 +11,22 @@ You are a TypeScript and JavaScript review specialist. Verify changed source, fr
 ## Checklist
 
 ### Type Safety and Runtime Boundaries
-- [ ] New or widened `any`, unsafe `unknown` casts, double assertions, non-null assertions, `// @ts-ignore`, or assertion chains hide a nullable or shape mismatch
+- [ ] New or widened `any`, unsafe `unknown` casts, double assertions, non-null assertions, `// @ts-ignore`, `@ts-expect-error`, or assertion chains hide a nullable or shape mismatch
 - [ ] External data from HTTP, storage, messages, environment variables, query parameters, or JSON is trusted without runtime validation or safe narrowing
-- [ ] Optional and nullable fields conflict with the project TypeScript settings
+- [ ] Optional and nullable fields conflict with `strictNullChecks`, `exactOptionalPropertyTypes`, or `noUncheckedIndexedAccess`
 - [ ] Union handling misses a new variant, status, event type, or API enum
-- [ ] Exported types, DTOs, or generated clients drift from their source contracts
+- [ ] Exported types or DTOs hide errors or drift from their source contracts
 
 ### Async and State Correctness
 - [ ] A promise is not returned or awaited, or an asynchronous error is lost
-- [ ] Parallel work can cause partial side effects, unbounded work, or incorrect ordering
-- [ ] Cancellation or cleanup is lost on HTTP calls, timers, streams, workers, or effects
+- [ ] `Promise.all` can cause partial side effects, unbounded work, or incorrect ordering
+- [ ] Cancellation or cleanup is lost on HTTP calls, timers, streams, workers, or effects; check `AbortSignal`
 - [ ] Component state, memoized values, effects, or dependencies can use stale data or create an update loop
 - [ ] Date, money, decimal, timezone, locale, or serialization logic changes business meaning
 
 ### Security
-- [ ] An HTML, URL, markdown, or script sink receives untrusted data without validation
-- [ ] Dynamic code, import paths, commands, or worker URLs use user-controlled input
+- [ ] An explicit browser sink such as `dangerouslySetInnerHTML`, `innerHTML`, or `insertAdjacentHTML` receives untrusted data without validation
+- [ ] Unsafe URL, markdown, or script sinks, or dynamic code, import paths, commands, or worker URLs use user-controlled input
 - [ ] Secrets, tokens, personal data, or authentication state use unsafe logs or storage
 - [ ] Session changes ignore CSRF, SameSite, CORS, or origin rules
 - [ ] URL or object construction creates traversal, redirect, request forgery, or prototype pollution risk

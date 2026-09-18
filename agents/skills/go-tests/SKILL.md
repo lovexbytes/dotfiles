@@ -63,6 +63,8 @@ Load [references/bdd-patterns.md](references/bdd-patterns.md) when testing branc
 
 ## Verification
 
+- When a requirement names an HTTP route, NATS subject, SQS queue, or equivalent public surface, test that named surface. Unit or storage tests do not replace it. Do not invent behavior when the requirement is incomplete; report the contract gap.
+
 - Run targeted tests for the package or behavior while iterating.
 - For broad behavior changes, shared helpers, or before claiming a branch is ready, run the repo-level Go test target when available, usually `make test`.
 - If no suitable Make target exists, use explicit `go test` commands for the touched packages.

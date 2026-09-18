@@ -29,7 +29,7 @@ ALL_AGENTS = [
     "web-accessibility",
     "web-frontend-performance",
 ]
-GO_ONLY_AGENTS = [
+SHARED_BACKEND_AGENTS = [
     "correctness",
     "concurrency",
     "conventions",
@@ -139,6 +139,7 @@ def build(tmp: Path, scope: str, selected: list[str] | None) -> dict:
     changed_source = []
     go_files = []
     ts_files = []
+    backend_ts_files = []
     web_files = []
     for item in index.get("files", []):
         if not item.get("is_source"):
@@ -165,6 +166,10 @@ def build(tmp: Path, scope: str, selected: list[str] | None) -> dict:
             ts_files.append(entry)
         if is_web_path(path) or is_web_path(old_path):
             web_files.append(entry)
+        if file_language in {"typescript", "javascript"} and (
+            not is_web_path(path) or not is_web_path(old_path)
+        ):
+            backend_ts_files.append(entry)
 
     selected_set = set(selected or ALL_AGENTS)
     unknown = selected_set.difference(ALL_AGENTS)
@@ -173,15 +178,17 @@ def build(tmp: Path, scope: str, selected: list[str] | None) -> dict:
 
     go_paths = [entry["path"] for entry in go_files]
     ts_paths = [entry["path"] for entry in ts_files]
+    backend_ts_paths = [entry["path"] for entry in backend_ts_files]
     web_paths = [entry["path"] for entry in web_files]
     agent_plan = {}
 
-    for agent in GO_ONLY_AGENTS:
+    backend_paths = combine_paths(go_paths, backend_ts_paths)
+    for agent in SHARED_BACKEND_AGENTS:
         if agent in selected_set:
             agent_plan[agent] = (
-                plan("run", "Go source changed", go_paths)
-                if go_paths
-                else plan("skip", "No Go source changed")
+                plan("run", "Go or backend TypeScript/JavaScript source changed", backend_paths)
+                if backend_paths
+                else plan("skip", "No Go or backend TypeScript/JavaScript source changed")
             )
 
     sql_paths = [path for path in contract_paths if SQL_CONTRACT.search(path)]
@@ -189,19 +196,19 @@ def build(tmp: Path, scope: str, selected: list[str] | None) -> dict:
     deploy_paths = [path for path in contract_paths if DEPLOY_CONTRACT.search(path)]
     review_contract_paths = combine_paths(sql_paths, service_paths, deploy_paths)
     contract_agent_paths = {
-        "observability": combine_paths(go_paths, deploy_paths),
-        "sql-data-access": combine_paths(go_paths, sql_paths),
-        "transactions": combine_paths(go_paths, sql_paths),
-        "compatibility": combine_paths(go_paths, review_contract_paths),
-        "distributed-operations": combine_paths(go_paths, review_contract_paths),
-        "domain-invariants": combine_paths(go_paths, sql_paths, service_paths),
+        "observability": combine_paths(backend_paths, deploy_paths),
+        "sql-data-access": combine_paths(backend_paths, sql_paths),
+        "transactions": combine_paths(backend_paths, sql_paths),
+        "compatibility": combine_paths(backend_paths, review_contract_paths),
+        "distributed-operations": combine_paths(backend_paths, review_contract_paths),
+        "domain-invariants": combine_paths(backend_paths, sql_paths, service_paths),
     }
     for agent, paths in contract_agent_paths.items():
         if agent in selected_set:
             agent_plan[agent] = (
-                plan("run", "Go source or relevant service contract changed", paths)
+                plan("run", "Go or backend TypeScript/JavaScript source or relevant service contract changed", paths)
                 if paths
-                else plan("skip", "No Go source or relevant service contract changed")
+                else plan("skip", "No Go or backend TypeScript/JavaScript source or relevant service contract changed")
             )
 
     if "tests" in selected_set:
@@ -253,22 +260,7 @@ def build(tmp: Path, scope: str, selected: list[str] | None) -> dict:
 
 def write_skip_reports(context: dict, reports_dir: Path) -> int:
     reports_dir.mkdir(parents=True, exist_ok=True)
-    count = 0
-    for agent, agent_plan in context["agent_plan"].items():
-        if agent_plan["decision"] != "skip":
-            continue
-        report = {
-            "agent": agent,
-            "files_checked": 0,
-            "findings": [],
-            "positive": [f"Skipped by router: {agent_plan['reason']}"],
-            "open_questions": [],
-        }
-        (reports_dir / f"{agent}.json").write_text(
-            json.dumps(report, indent=2) + "\n", encoding="utf-8"
-        )
-        count += 1
-    return count
+    return 0
 
 
 def main() -> int:
